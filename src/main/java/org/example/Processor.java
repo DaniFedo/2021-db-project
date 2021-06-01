@@ -2,11 +2,15 @@ package org.example;
 
 import java.util.concurrent.BlockingQueue;
 
-public class Processor implements Runnable {
+public class Processor extends Thread {
     private final BlockingQueue<Packet> decryptedPacketBlockingQueue;
+    private final BlockingQueue<Packet> answeredPacketBlockingQueue;
+    //private final Packet poisonPill;
 
-    public Processor(BlockingQueue<Packet> packetBlockingQueue) {
+    public Processor(BlockingQueue<Packet> packetBlockingQueue, BlockingQueue<Packet> answeredPacketBlockingQueue) {
         this.decryptedPacketBlockingQueue = packetBlockingQueue;
+        this.answeredPacketBlockingQueue = answeredPacketBlockingQueue;
+        this.start();
     }
 
     @Override
@@ -15,15 +19,12 @@ public class Processor implements Runnable {
             while (!decryptedPacketBlockingQueue.isEmpty()) {
 
                 Packet packet = decryptedPacketBlockingQueue.take();
-                if(packet.message.message == "OK") {decryptedPacketBlockingQueue.put(packet); return;}
-                /* if (pac.equals(poisonPill)) {
-                    return;
-                }*/
+
                 packet.message.message = "OK";
-                decryptedPacketBlockingQueue.put(packet);
+                answeredPacketBlockingQueue.put(packet);
 
-                System.out.println("processor " + Thread.currentThread().getName() + ' ' + packet.message);
-
+                //for test
+                //System.out.println("processor__ " + Thread.currentThread().getName() + ' ' + packet.message);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

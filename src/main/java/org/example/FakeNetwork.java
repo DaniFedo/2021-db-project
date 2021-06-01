@@ -5,9 +5,9 @@ import java.security.SecureRandom;
 public class FakeNetwork implements Network {
 
 
-
+    //random generation almost everywhere where was possible
     @Override
-    public Packet generate() throws Exception {
+    public byte[] generate() throws Exception {
         byte[] cTypes = {5, 6, 9, 10, 17, 18, 33, 34};
 
         SecureRandom random = new SecureRandom();
@@ -18,10 +18,14 @@ public class FakeNetwork implements Network {
         {
             generatedText[i] = (char)(random.nextInt(58) + 65);
         }
-
         Message generatedMessage = new Message(cTypes[randomCommandNumber], randomCommandNumber, String.valueOf(generatedText));
-        //System.out.println(generatedMessage.message);
 
-        return new Packet((byte)(randomCommandNumber + 1), random.nextLong(), generatedMessage);
+        return new Packet((byte)(randomCommandNumber + 1), random.nextLong(), generatedMessage).packetPackaging();
+    }
+
+    @Override
+    public void sendMessage(Packet packet){
+        //fake output
+        System.out.println(packet);
     }
 }

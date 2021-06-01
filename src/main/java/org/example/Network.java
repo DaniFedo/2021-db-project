@@ -1,8 +1,9 @@
 package org.example;
 
 public interface Network {
-    Packet generate() throws Exception;
-    //?
-    /*void listen();
-    Packet receive();*/
+    byte[] generate() throws Exception;
+    void sendMessage(Packet packet);
+
+    //for future
+    //Packet receive();
 }

@@ -65,7 +65,8 @@ public class CommandTypeEncoder {
 
             case DELETE:
                 return "DELETE";
-/*
+
+            /* for future
             case LIST_BY_CRITERIA:
                 return "LIST_BY_CRITERIA";*/
 
