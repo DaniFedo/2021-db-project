@@ -17,7 +17,7 @@ public class Packet
     short wCrc16_1;
     Message message;
     short wCrc16_2;
-    static SecretKey secretKey;
+    public SecretKey secretKey;
 
     public Packet(byte bSrc, long bPktId, Message message) throws Exception
     {
@@ -109,9 +109,9 @@ public class Packet
                         .putShort(wCrc16_2).array();
 
     }
-    /*public static void main(String args[]) throws Exception
+    public static void main(String args[]) throws Exception
     {
-        Message message = new Message(1,1, "test");
+       /* Message message = new Message(1,1, "test");
         byte test1 = 1;
         long test2 = 2;
         Packet packet = new Packet(test1,test2, message);
@@ -122,8 +122,18 @@ public class Packet
         Packet packet1 = new Packet(packetPackaged);
         System.out.println(packet1.message.message);
         System.out.println("second: " + packet1.bMagic + " "  + packet1.bSrc + " " + packet1.bPktId + " " + packet1.wLen);
+       */
+        /*CommandTypeEncoder c = new CommandTypeEncoder(9);
+        System.out.println(c.getTypeCommand(9));*/
 
+        /*FakeNetwork f = new FakeNetwork();
+        Packet packetTest;
+        packetTest = f.generate();
+        System.out.println(packetTest.message.message + ' ' + packetTest.bSrc + ' ' + packetTest.bPktId);
+        packetTest.message.decode(secretKey);
+        System.out.println(packetTest.message.message);
+        Decryptor decryptor = new Decryptor();*/
 
-    }*/
+    }
 
 }
