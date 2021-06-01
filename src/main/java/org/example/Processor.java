@@ -23,8 +23,9 @@ public class Processor extends Thread {
                 packet.message.message = "OK";
                 answeredPacketBlockingQueue.put(packet);
 
+
                 //for test
-                //System.out.println("processor__ " + Thread.currentThread().getName() + ' ' + packet.message);
+                System.out.println("processor__ " + Thread.currentThread().getName() + ' ' + packet.message);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

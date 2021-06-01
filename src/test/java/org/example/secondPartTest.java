@@ -1,15 +1,15 @@
 package org.example;
 
-import org.junit.Assert;
+
 import org.junit.Test;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.*;
 
 public class secondPartTest {
+
     //this class may also be implemented as a fake sender, but task did not mention that we have
     //to use threads in creating messages
-    public class sender extends Thread{
+    public class sender extends Thread {
         private final BlockingQueue<byte[]> testBQ;
         FakeNetwork f = new FakeNetwork();
 
@@ -18,14 +18,10 @@ public class secondPartTest {
             this.start();
         }
 
-        public void run()
-        {
-            try
-            {
-                for(int i = 0; i < 5; i++) testBQ.put(f.generate());
-            }
-            catch(InterruptedException e)
-            {
+        public void run() {
+            try {
+                for (int i = 0; i < 5; i++) testBQ.put(f.generate());
+            } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -33,25 +29,33 @@ public class secondPartTest {
         }
 
     }
-    @Test
-    public void analyzingOfFullProcessTest() throws InterruptedException {
 
-        BlockingQueue<byte[]> queueEncrypted = new LinkedBlockingQueue<>(100);
 
-        BlockingQueue<Packet> queueDecrypted = new LinkedBlockingQueue<>(100);
+    //this tests executes my Decryptor, Encryptor and Processor.
+    //including the fact that my mentioned classes are already "extends Thread", so their constructors
+    //have "this.start()", they are also being executed by ExecutorService, which leads to bigger
+    //amount of threads and workload
+        @Test
+        public void analyzingOfFullProcessTest() throws InterruptedException {
 
-        BlockingQueue<Packet> queueAnswered = new LinkedBlockingQueue<>(100);
+            BlockingQueue<byte[]> queueEncrypted = new LinkedBlockingQueue<>(100);
 
-        for(int i = 0; i < 2; i++) {
-            new Thread(new sender(queueEncrypted)).join();
-        }
+            BlockingQueue<Packet> queueDecrypted = new LinkedBlockingQueue<>(100);
 
-        System.out.println(queueEncrypted.take());
-        for(int i = 0; i < 3; i++) {
+            BlockingQueue<Packet> queueAnswered = new LinkedBlockingQueue<>(100);
+
+            for (int i = 0; i < 3; i++) {
+                new Thread(new sender(queueEncrypted)).join();
+            }
+
+            System.out.println(queueEncrypted.take());
+
+            //previous test
+            /*  for(int i = 0; i < 3; i++) {
             new Thread(new Decryptor(queueEncrypted, queueDecrypted)).join();
         }
 
-        for(int i = 0; i < 3; i++)
+        for(int i = 0; i < 2; i++)
         {
             new Thread(new Processor(queueDecrypted, queueAnswered)).join();
         }
@@ -59,7 +63,25 @@ public class secondPartTest {
         for(int i = 0; i < 3; i++)
         {
             new Thread(new Encryptor(queueAnswered)).join();
-        }
+        }*/
 
+            ExecutorService executor = Executors.newFixedThreadPool(10);
+
+            for(int i = 0; i < 3; i++) {
+                executor.execute(new Decryptor(queueEncrypted, queueDecrypted));
+            }
+
+            for(int i = 0; i < 2; i++)
+            {
+                executor.execute(new Processor(queueDecrypted, queueAnswered));
+            }
+
+            for(int i = 0; i < 4; i++)
+            {
+                executor.execute(new Encryptor(queueAnswered));
+            }
+            executor.shutdown();
+        }
     }
-}
+
+
