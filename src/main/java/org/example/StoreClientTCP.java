@@ -5,7 +5,7 @@ import java.net.Socket;
 import java.util.Arrays;
 
 public class StoreClientTCP {
-        private Socket clientSocket;
+        public Socket clientSocket;
         private OutputStream out;
         private InputStream in;
 
@@ -13,19 +13,20 @@ public class StoreClientTCP {
             clientSocket = new Socket(ip, port);
             out = clientSocket.getOutputStream();
             in = clientSocket.getInputStream();
-            System.out.println("connected and isClosed is: " + clientSocket.isClosed());
+
         }
 
-        public void sendPackage(byte[] packet) throws IOException {
+        public void sendPackage(byte[] packet) throws Exception {
             out.write(packet);
-            System.out.println("Send from: " + this.clientSocket + " " + Arrays.toString(packet));
+            System.out.println("Client with ID " + clientSocket.getLocalPort()+ " send " + Arrays.toString(packet));
 
         }
-        public byte[] receive() throws IOException {
+        public byte[] receive() throws Exception {
             byte[] maxPacketBuffer = new byte[Packet.maxLength];
-
             in.read(maxPacketBuffer);
-            System.out.println(this.clientSocket + " received a " + Arrays.toString(maxPacketBuffer));
+            System.out.println("Client with ID " + clientSocket.getLocalPort() + " received a " + Arrays.toString(maxPacketBuffer));
+            Packet packetForOutput = new Packet(maxPacketBuffer);
+            System.out.println("Client with ID " + clientSocket.getLocalPort() + " received a message: " + packetForOutput.message.message);
             return maxPacketBuffer;
         }
 
@@ -33,7 +34,6 @@ public class StoreClientTCP {
             in.close();
             out.close();
             clientSocket.close();
-            System.out.println("Closed and isClosed is: " + clientSocket.isClosed());
         }
 
 }

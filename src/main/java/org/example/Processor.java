@@ -2,10 +2,9 @@ package org.example;
 
 import java.util.concurrent.BlockingQueue;
 
-public class Processor extends Thread {
+public class Processor extends Thread{
     private final BlockingQueue<Packet> decryptedPacketBlockingQueue;
     private final BlockingQueue<Packet> answeredPacketBlockingQueue;
-    //private final Packet poisonPill;
 
     public Processor(BlockingQueue<Packet> packetBlockingQueue, BlockingQueue<Packet> answeredPacketBlockingQueue) {
         this.decryptedPacketBlockingQueue = packetBlockingQueue;
@@ -16,6 +15,7 @@ public class Processor extends Thread {
     @Override
     public void run() {
         try {
+            if(decryptedPacketBlockingQueue.isEmpty()) Thread.currentThread().interrupt();
             while (!decryptedPacketBlockingQueue.isEmpty()) {
 
                 Packet packet = decryptedPacketBlockingQueue.take();
@@ -23,9 +23,6 @@ public class Processor extends Thread {
                 packet.message.message = "OK";
                 answeredPacketBlockingQueue.put(packet);
 
-
-                //for test
-                System.out.println("processor__ " + Thread.currentThread().getName() + ' ' + packet.message);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

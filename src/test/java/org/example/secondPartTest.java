@@ -11,7 +11,7 @@ public class secondPartTest {
     //to use threads in creating messages
     public class sender extends Thread {
         private final BlockingQueue<byte[]> testBQ;
-        FakeNetwork f = new FakeNetwork();
+        MessageGenerator f = new MessageGenerator();
 
         public sender(BlockingQueue<byte[]> testBQ) {
             this.testBQ = testBQ;
@@ -20,7 +20,7 @@ public class secondPartTest {
 
         public void run() {
             try {
-                for (int i = 0; i < 5; i++) testBQ.put(f.generate());
+                for (int i = 0; i < 5; i++) testBQ.put(f.generateClassic());
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             } catch (Exception e) {

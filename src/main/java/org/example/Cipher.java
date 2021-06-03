@@ -17,8 +17,7 @@ public class Cipher
         initialization();
         cipher.init(javax.crypto.Cipher.ENCRYPT_MODE, secretKey);
 
-        //System.out.println("secretKey is " + secretKey);
-        byte[] cipherText = cipher.doFinal(message.getBytes("UTF-8"));
+        byte[] cipherText = cipher.doFinal(message.getBytes(StandardCharsets.UTF_8));
         return Base64.getEncoder().encodeToString(cipherText);
 
     }

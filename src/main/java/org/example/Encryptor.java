@@ -10,32 +10,24 @@ public class Encryptor extends Thread{
     public Encryptor(BlockingQueue<Packet> decryptedPacketBlockingQueue) {
         this.decryptedPacketBlockingQueue = decryptedPacketBlockingQueue;
         this.start();
+
     }
 
     @Override
     public void run() {
         try {
+            if(decryptedPacketBlockingQueue.isEmpty()) Thread.currentThread().interrupt();
 
             while (!decryptedPacketBlockingQueue.isEmpty()) {
-
                 Packet packet = decryptedPacketBlockingQueue.take();
 
                 if(packet.message.message == "OK") {
 
                     packet.message.encode(packet.secretKey);
-                    byte[] packetToSend = packet.packetPackaging();
-
-                    FakeNetwork fakeNetwork = new FakeNetwork();
-                    fakeNetwork.sendMessage(packetToSend);
-
-                    //was testing
-                    //synchronized (this){Process.test();}
-
-                    //for test
-                    //System.out.println("encryptor__ " + Thread.currentThread().getName() + ' ' + packet.message);
                 }
-                else decryptedPacketBlockingQueue.put(packet);
+                decryptedPacketBlockingQueue.put(packet);
 
+                Thread.currentThread().interrupt();
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

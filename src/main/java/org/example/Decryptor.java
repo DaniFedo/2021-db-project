@@ -17,6 +17,7 @@ public class Decryptor extends Thread{
     @SneakyThrows
     public void run() {
         try {
+            if(encryptedPacketBlockingQueue.isEmpty()) Thread.currentThread().interrupt();
             while (!encryptedPacketBlockingQueue.isEmpty()) {
 
                 byte[] packetEncoded = encryptedPacketBlockingQueue.take();
@@ -24,10 +25,6 @@ public class Decryptor extends Thread{
                 Packet packet = new Packet(packetEncoded);
 
                 decryptedPacketBlockingQueue.put(packet);
-
-                //for test
-                System.out.println("decryptor__ " + Thread.currentThread().getName() + ' ' + packet.message);
-
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
