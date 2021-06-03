@@ -61,6 +61,7 @@ public class Message
             message = cipher.encode(message, secretKey);
             return message.length();
         }
+
         public int messageLength()
         {
             return Integer.BYTES * 2 + message.length();

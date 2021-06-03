@@ -2,7 +2,7 @@ package org.example;
 
 public interface Network {
     byte[] generate() throws Exception;
-    void sendMessage(Packet packet);
+    void sendMessage(byte[] packet);
 
     //for future
     //Packet receive();

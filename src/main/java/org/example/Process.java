@@ -4,6 +4,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Process {
+
     //was testing + Encryptor(learned how to use synchronized!!!! great)
     //static int counter = 0;
 
@@ -28,15 +29,15 @@ public class Process {
         //doubt we need this
         //Packet poisonPill = new Packet((byte)1, 1, new Message(1,1,"poison"));
 
-        FakeNetwork f = new FakeNetwork();
-        byte[] packetTest;
+        /*FakeNetwork f = new FakeNetwork();
+        byte[] packetTest;*/
 
         //fulfilling our BQ
-        for(int i = 0; i < 98; i++)
+        /*for(int i = 0; i < 98; i++)
         {
             packetTest = f.generate();
             queueEncrypted.put(packetTest);
-        }
+        }*/
 
         for(int i = 0; i < 3; i++) {
             new Thread(new Decryptor(queueEncrypted, queueDecrypted)).join();

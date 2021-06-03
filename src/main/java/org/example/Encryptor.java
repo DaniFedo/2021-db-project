@@ -23,9 +23,10 @@ public class Encryptor extends Thread{
                 if(packet.message.message == "OK") {
 
                     packet.message.encode(packet.secretKey);
+                    byte[] packetToSend = packet.packetPackaging();
 
                     FakeNetwork fakeNetwork = new FakeNetwork();
-                    fakeNetwork.sendMessage(packet);
+                    fakeNetwork.sendMessage(packetToSend);
 
                     //was testing
                     //synchronized (this){Process.test();}

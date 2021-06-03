@@ -24,7 +24,7 @@ public class FakeNetwork implements Network {
     }
 
     @Override
-    public void sendMessage(Packet packet){
+    public void sendMessage(byte[] packet){
         //fake output
         System.out.println(packet);
     }

@@ -19,6 +19,7 @@ public class Packet
     Message message;
     short wCrc16_2;
     public SecretKey secretKey;
+    public static int maxLength = Byte.BYTES * 2 + Long.BYTES + Integer.BYTES * 3 + Short.BYTES * 2 + 100;
 
     public Packet(byte bSrc, long bPktId, Message message) throws Exception
     {
@@ -29,7 +30,7 @@ public class Packet
         wLen = message.messageLengthCoded(secretKey);
     }
 
-    private SecretKey keyMaking() throws Exception
+    private  SecretKey keyMaking() throws Exception
     {
         KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
 
@@ -117,7 +118,14 @@ public class Packet
                         .put(keyEncoded).array();
 
     }
-    /*public static void main(String args[]) throws Exception
+   /*public static void main(String args[]) throws Exception
+    {
+        for(int i = 0; i < 5; i++)
+        System.out.println(maxLength);
+    }*/
+
+
+            /*
     {
         Message message = new Message(1,1, "");
         byte test1 = 1;
