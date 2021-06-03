@@ -5,7 +5,6 @@ import lombok.SneakyThrows;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.time.LocalTime;
 import java.util.Arrays;
 
 public class StoreServerTCP{
@@ -39,22 +38,10 @@ public class StoreServerTCP{
            amountOfThreads++;
            if(amountOfThreads == 3)
                break;
+
        }
-       System.out.println("active threads: " + Thread.activeCount());
 
    }
-    public boolean reconnect()
-    {
-        LocalTime time = LocalTime.now();
-        //System.out.println(time);
-        time = time.plusMinutes(1);
-        //System.out.println(time);
-        while(LocalTime.now().getMinute() < time.getMinute())
-            if(amountOfThreads < 3)
-                return true;
-
-        return false;
-    }
 
     public void stop() throws IOException {
         serverSocket.close();
@@ -63,19 +50,16 @@ public class StoreServerTCP{
     private static class EchoClientHandler extends Thread{
 
         private final Socket clientSocket;
-        private OutputStream out;
-        private InputStream in;
 
-
-        public EchoClientHandler(Socket socket) throws IOException, InterruptedException {
+        public EchoClientHandler(Socket socket) throws InterruptedException {
             this.clientSocket = socket;
             this.join();
         }
 
         @SneakyThrows
         public void run() {
-            out = clientSocket.getOutputStream();
-            in = clientSocket.getInputStream();
+            OutputStream out = clientSocket.getOutputStream();
+            InputStream in = clientSocket.getInputStream();
 
             byte[] maxPacketBuffer = new byte[Packet.maxLength];
 

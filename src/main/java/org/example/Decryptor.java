@@ -25,6 +25,7 @@ public class Decryptor extends Thread{
                 Packet packet = new Packet(packetEncoded);
 
                 decryptedPacketBlockingQueue.put(packet);
+
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

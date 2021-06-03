@@ -9,9 +9,9 @@ public class secondPartTest {
 
     //this class may also be implemented as a fake sender, but task did not mention that we have
     //to use threads in creating messages
-    public class sender extends Thread {
+    public static class sender extends Thread {
         private final BlockingQueue<byte[]> testBQ;
-        MessageGenerator f = new MessageGenerator();
+        final MessageGenerator f = new MessageGenerator();
 
         public sender(BlockingQueue<byte[]> testBQ) {
             this.testBQ = testBQ;
@@ -43,6 +43,8 @@ public class secondPartTest {
             BlockingQueue<Packet> queueDecrypted = new LinkedBlockingQueue<>(100);
 
             BlockingQueue<Packet> queueAnswered = new LinkedBlockingQueue<>(100);
+
+            BlockingQueue<Packet> sendingPacketBlockingQueue = new LinkedBlockingQueue<>(100);
 
             for (int i = 0; i < 3; i++) {
                 new Thread(new sender(queueEncrypted)).join();
@@ -78,7 +80,7 @@ public class secondPartTest {
 
             for(int i = 0; i < 4; i++)
             {
-                executor.execute(new Encryptor(queueAnswered));
+                executor.execute(new Encryptor(queueAnswered, sendingPacketBlockingQueue));
             }
             executor.shutdown();
         }

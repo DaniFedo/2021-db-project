@@ -16,23 +16,25 @@ public class Process {
         //Packets after Processor
         BlockingQueue<Packet> queueAnswered = new LinkedBlockingQueue<>(100);
 
+        BlockingQueue<Packet> queueForSending = new LinkedBlockingQueue<>(100);
+
         queueEncrypted.put(Packet);
 
         for(int i = 0; i < 3; i++) {
             new Thread(new Decryptor(queueEncrypted, queueDecrypted)).join();
         }
 
-        for(int i = 0; i < 3; i++)
+        for(int i = 0; i < 4; i++)
         {
             new Thread(new Processor(queueDecrypted, queueAnswered)).join();
         }
 
-        for(int i = 0; i < 3; i++) {
-            new Thread(new Encryptor(queueAnswered)).join();
+        for(int i = 0; i < 4; i++) {
+            new Thread(new Encryptor(queueAnswered, queueForSending)).join();
         }
 
-        byte[] output = queueAnswered.take().packetPackaging();
 
-        return output;
+
+        return  queueForSending.take().packetPackaging();
     }
 }

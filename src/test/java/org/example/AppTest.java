@@ -1,7 +1,5 @@
 package org.example;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,8 +12,8 @@ import java.security.SecureRandom;
  */
 public class AppTest 
 {
-    String expectedResult = "testText";
-    Message testMessage = new Message(1,1,expectedResult);
+    final String expectedResult = "testText";
+    final Message testMessage = new Message(1,1,expectedResult);
 
     private SecretKey keyForTest() throws Exception
     {

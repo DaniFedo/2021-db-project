@@ -30,7 +30,7 @@ public class Packet
         wLen = message.messageLengthCoded(secretKey);
     }
 
-    private  SecretKey keyMaking() throws Exception
+    private void keyMaking() throws Exception
     {
         KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
 
@@ -40,7 +40,6 @@ public class Packet
         keyGenerator.init(keyBitSize, secureRandom);
 
         secretKey = keyGenerator.generateKey();
-        return secretKey;
     }
 
 
@@ -118,53 +117,4 @@ public class Packet
                         .put(keyEncoded).array();
 
     }
-   /*public static void main(String args[]) throws Exception
-    {
-        for(int i = 0; i < 5; i++)
-        System.out.println(maxLength);
-    }*/
-
-
-            /*
-    {
-        Message message = new Message(1,1, "");
-        byte test1 = 1;
-        long test2 = 2;
-        Packet packet = new Packet(test1,test2, message);
-        byte[] packagedPacket = packet.packetPackaging();
-
-        Packet packet2 = new Packet(packagedPacket);
-        Message message2 = new Message(6,5, "test2");
-        byte test4 = 7;
-        long test3 = 5;
-        Packet packet3 = new Packet(test4,test3, message2);
-
-
-
-        //packet2.message.decode(packet2.secretKey);
-        System.out.println(packet2.message.message);
-
-
-        *//*
-        System.out.println("first: " + packet.message.bUserId + " "  + packet.message.cType + " " + packet.message);
-        //System.out.println();
-        byte[] packetPackaged = packet.packetPackaging();
-        System.out.println(packetPackaged.toString());
-        Packet packet1 = new Packet(packetPackaged);
-        System.out.println(packet1.message.message);
-        System.out.println("second: " + packet1.bMagic + " "  + packet1.bSrc + " " + packet1.bPktId + " " + packet1.wLen);
-       *//*
-        *//*CommandTypeEncoder c = new CommandTypeEncoder(9);
-        System.out.println(c.getTypeCommand(9));*//*
-
-        *//*FakeNetwork f = new FakeNetwork();
-        Packet packetTest;
-        packetTest = f.generate();
-        System.out.println(packetTest.message.message + ' ' + packetTest.bSrc + ' ' + packetTest.bPktId);
-        packetTest.message.decode(secretKey);
-        System.out.println(packetTest.message.message);
-        Decryptor decryptor = new Decryptor();*//*
-
-    }*/
-
 }

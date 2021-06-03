@@ -15,13 +15,16 @@ public class Processor extends Thread{
     @Override
     public void run() {
         try {
-            if(decryptedPacketBlockingQueue.isEmpty()) Thread.currentThread().interrupt();
+            //if(decryptedPacketBlockingQueue.isEmpty()) Thread.currentThread().interrupt();
+
             while (!decryptedPacketBlockingQueue.isEmpty()) {
 
                 Packet packet = decryptedPacketBlockingQueue.take();
 
                 packet.message.message = "OK";
                 answeredPacketBlockingQueue.put(packet);
+
+                //Thread.currentThread().interrupt();
 
             }
         } catch (InterruptedException e) {

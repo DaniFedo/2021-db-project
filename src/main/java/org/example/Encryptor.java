@@ -5,12 +5,12 @@ import java.util.concurrent.BlockingQueue;
 public class Encryptor extends Thread{
 
     private final BlockingQueue<Packet> decryptedPacketBlockingQueue;
-    //private final Packet poisonPill;
+    private final BlockingQueue<Packet> sendingPacketBlockingQueue;
 
-    public Encryptor(BlockingQueue<Packet> decryptedPacketBlockingQueue) {
+    public Encryptor(BlockingQueue<Packet> decryptedPacketBlockingQueue, BlockingQueue<Packet> sendingPacketBlockingQueue) {
         this.decryptedPacketBlockingQueue = decryptedPacketBlockingQueue;
+        this.sendingPacketBlockingQueue = sendingPacketBlockingQueue;
         this.start();
-
     }
 
     @Override
@@ -21,11 +21,9 @@ public class Encryptor extends Thread{
             while (!decryptedPacketBlockingQueue.isEmpty()) {
                 Packet packet = decryptedPacketBlockingQueue.take();
 
-                if(packet.message.message == "OK") {
+                packet.message.encode(packet.secretKey);
 
-                    packet.message.encode(packet.secretKey);
-                }
-                decryptedPacketBlockingQueue.put(packet);
+                sendingPacketBlockingQueue.put(packet);
 
                 Thread.currentThread().interrupt();
             }

@@ -25,6 +25,7 @@ public class Message
 
         public byte[] messagePackaging()
         {
+
           return ByteBuffer.allocate(messageLength())
                             .putInt(cType)
                             .putInt(bUserId)

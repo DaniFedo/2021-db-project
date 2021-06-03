@@ -4,6 +4,8 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Arrays;
 
+//ServerClient -> TCPTest
+
 public class StoreClientTCP {
         public Socket clientSocket;
         private OutputStream out;
@@ -21,13 +23,13 @@ public class StoreClientTCP {
             System.out.println("Client with ID " + clientSocket.getLocalPort()+ " send " + Arrays.toString(packet));
 
         }
-        public byte[] receive() throws Exception {
+        public void receive() throws Exception {
             byte[] maxPacketBuffer = new byte[Packet.maxLength];
             in.read(maxPacketBuffer);
             System.out.println("Client with ID " + clientSocket.getLocalPort() + " received a " + Arrays.toString(maxPacketBuffer));
             Packet packetForOutput = new Packet(maxPacketBuffer);
             System.out.println("Client with ID " + clientSocket.getLocalPort() + " received a message: " + packetForOutput.message.message);
-            return maxPacketBuffer;
+
         }
 
         public void stopConnection() throws IOException {

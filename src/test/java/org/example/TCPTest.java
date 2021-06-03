@@ -2,7 +2,7 @@ package org.example;
 
 import org.junit.Test;
 
-public class ThirdPartTest {
+public class TCPTest {
     @Test
     public void givenClient1_whenServerResponds_thenCorrect() throws Exception {
         MessageGenerator f = new MessageGenerator();

@@ -76,10 +76,10 @@ public class CommandTypeEncoder {
     }
 
     @Getter
-    boolean isProduct;
+    final boolean isProduct;
 
     @Getter
-    int commandTypeCode;
+    final int commandTypeCode;
 
     @Getter
     String commandType;
