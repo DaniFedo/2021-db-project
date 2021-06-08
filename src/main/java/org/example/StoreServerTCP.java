@@ -38,7 +38,6 @@ public class StoreServerTCP{
            amountOfThreads++;
            if(amountOfThreads == 3)
                break;
-
        }
 
    }
