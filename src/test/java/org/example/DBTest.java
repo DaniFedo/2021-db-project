@@ -4,6 +4,8 @@ import org.junit.Test;
 
 import javax.xml.crypto.Data;
 public class DBTest {
+
+    //TCP based
     private void DBInitialization()
     {
         Database.connect();
