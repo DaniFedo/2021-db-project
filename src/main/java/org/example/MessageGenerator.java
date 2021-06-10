@@ -2,6 +2,7 @@ package org.example;
 
 import java.security.SecureRandom;
 
+//unused
 public class MessageGenerator{
     final byte[] cTypes = {5, 6, 9, 10, 17, 18, 33, 34};
     final SecureRandom random = new SecureRandom();
@@ -9,7 +10,7 @@ public class MessageGenerator{
 
     public byte[] generateForClient(StoreClientTCP clientTCP) throws Exception {
 
-        int randomCommandNumber = random.nextInt(8);
+        int randomCommandNumber = random.nextInt(cTypes.length);
         char[] generatedText = new char[randomCommandNumber];
 
         for(int i = 0; i < randomCommandNumber; i++)
@@ -25,7 +26,7 @@ public class MessageGenerator{
 
     public byte[] generateForClient(StoreClientUDP clientUDP) throws Exception {
 
-        int randomCommandNumber = random.nextInt(8);
+        int randomCommandNumber = random.nextInt(cTypes.length);
         char[] generatedText = new char[randomCommandNumber];
 
         for(int i = 0; i < randomCommandNumber; i++)
@@ -46,7 +47,7 @@ public class MessageGenerator{
         byte[] cTypes = {5, 6, 9, 10, 17, 18, 33, 34};
 
         SecureRandom random = new SecureRandom();
-        int randomCommandNumber = random.nextInt(8);
+        int randomCommandNumber = random.nextInt(cTypes.length);
         char[] generatedText = new char[randomCommandNumber];
 
         for(int i = 0; i < randomCommandNumber; i++)

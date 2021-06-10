@@ -9,15 +9,25 @@ public class DBWorkspace {
     public final static String dbName =  "database.db";
     public final static String tableName = "myTable";
 
-    public static void main(String args[])
-    {
-        Database.connect();
+    public static void main(String args[]) throws Exception {
 
-        Table.create();
+
+        //Table.create();
 
         //Table.addProduct("first");
 
-        Table.addProduct("second");
+        Message message = new Message(5, 123, "TestProduct");
+        Packet packet = new Packet((byte)1,1, message);
+
+        StoreClientTCP client1 = new StoreClientTCP();
+        client1.startConnection("localhost", 2305);
+
+        client1.sendPackage(packet.packetPackaging());
+        client1.receive();
+
+        client1.stopConnection();
+
+        //Table.addProduct("second");
 
         /*Table.deleteProduct("first");
 
@@ -27,7 +37,7 @@ public class DBWorkspace {
 
         //Table.updateProduct(7, "newTitle");
 
-        Table.showAllProducts();
+        /*Table.showAllProducts();
 
         Table.showProductsInRange(3);
 
@@ -37,8 +47,7 @@ public class DBWorkspace {
 
         Table.showProductByTitle("second", 4);
 
-        Table.showProductById(7);
-        Database.close();
+        Table.showProductById(7);*/
 
     }
 }

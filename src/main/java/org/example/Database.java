@@ -17,7 +17,7 @@ public class Database {
             String url = "jdbc:sqlite:" + DBWorkspace.dbName;
             connection = DriverManager.getConnection(url);
 
-            System.out.println("Database " + DBWorkspace.dbName + " connected to the SQLite");
+            //System.out.println("Database " + DBWorkspace.dbName + " connected to the SQLite");
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -30,7 +30,7 @@ public class Database {
         try
         {
             connection.close();
-            System.out.println("Database " + DBWorkspace.dbName + " closed");
+            //System.out.println("Database " + DBWorkspace.dbName + " closed");
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public class StoreServerTCP{
@@ -69,14 +70,11 @@ public class StoreServerTCP{
                     in.read(maxPacketBuffer);
 
                     if (!Arrays.toString(check).equals(Arrays.toString(maxPacketBuffer))) {
-                        System.out.println("Received(at server): " + Arrays.toString(maxPacketBuffer));
+                        //System.out.println("Received(at server): " + Arrays.toString(maxPacketBuffer));
 
-                        Packet packet1 = new Packet(maxPacketBuffer);
-                        System.out.println("Message received: " + packet1.message.message);
-
-                        byte[] sending = process.process(maxPacketBuffer);
-                        System.out.println("Sent from server: " + Arrays.toString(sending));
-                        System.out.println("---------------------------");
+                        byte[] sending = Process.process(maxPacketBuffer);
+                        //System.out.println("Sent from server: " + Arrays.toString(sending));
+                        System.out.println(" ");
 
                         out.write(sending);
 

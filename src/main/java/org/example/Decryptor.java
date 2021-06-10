@@ -4,20 +4,25 @@ import lombok.SneakyThrows;
 
 import java.util.concurrent.BlockingQueue;
 
-public class Decryptor extends Thread{
-    private final BlockingQueue<byte[]> encryptedPacketBlockingQueue;
+public class Decryptor{
+   /* private final BlockingQueue<byte[]> encryptedPacketBlockingQueue;
     private final BlockingQueue<Packet> decryptedPacketBlockingQueue;
 
     public Decryptor(BlockingQueue<byte[]> packetBlockingQueue, BlockingQueue<Packet> encryptedPacketBlockingQueue) {
         this.encryptedPacketBlockingQueue = packetBlockingQueue;
         this.decryptedPacketBlockingQueue = encryptedPacketBlockingQueue;
-        this.start();
+    }*/
+
+    public static Packet decrypt(byte[] inputPacket) throws Exception {
+
+        Packet packetOutput = new Packet(inputPacket);
+        return packetOutput;
     }
 
-    @SneakyThrows
+   /* @SneakyThrows
     public void run() {
         try {
-            if(encryptedPacketBlockingQueue.isEmpty()) Thread.currentThread().interrupt();
+            //if(encryptedPacketBlockingQueue.isEmpty()) Thread.currentThread().interrupt();
             while (!encryptedPacketBlockingQueue.isEmpty()) {
 
                 byte[] packetEncoded = encryptedPacketBlockingQueue.take();
@@ -30,6 +35,6 @@ public class Decryptor extends Thread{
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-    }
+    }*/
 
 }

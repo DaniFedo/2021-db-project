@@ -58,7 +58,7 @@ public class Table {
 
             statement.execute(query);
 
-            System.out.println("Table " + DBWorkspace.tableName + " created");
+            System.out.println("Table " + DBWorkspace.tableName + " created or already exists");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -66,7 +66,7 @@ public class Table {
     }
 
 
-    //create product
+    //create product; code - 5
     public static void addProduct(String title) {
         String query = "INSERT INTO " + DBWorkspace.tableName + " (title) VALUES(?)";
 
@@ -76,31 +76,16 @@ public class Table {
             preparedStatement.setString(1, title);
 
             preparedStatement.executeUpdate();
+            System.out.println("Added new element: " + title);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
 
-    //other
-    public static void showAllProducts() {
-        String query = "SELECT * FROM " + DBWorkspace.tableName;
+    //list by criteria; code - 65
 
-        try {
-            Statement statement = Database.connection.createStatement();
-            System.out.println("All products:");
-            showProducts(statement.executeQuery(query));
-            //return statement.executeQuery(query);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-
-    //list by criteria
     public static void showProductsInRange(int amount) {
         String query = "SELECT * FROM " + DBWorkspace.tableName + " LIMIT ?, ?";
 
@@ -148,7 +133,7 @@ public class Table {
     }
 
 
-    //read
+    //read; code - 9
     public static void showProductById(int id){
         String query = "SELECT * FROM " + DBWorkspace.tableName + " WHERE id = ?";
 
@@ -165,8 +150,24 @@ public class Table {
         }
     }
 
+    public static void showAllProducts() {
+        String query = "SELECT * FROM " + DBWorkspace.tableName;
 
-    //delete
+        try {
+            Statement statement = Database.connection.createStatement();
+            System.out.println("All products:");
+            showProducts(statement.executeQuery(query));
+            //return statement.executeQuery(query);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+    //delete; code - 33
     public static void deleteProduct(String title){
         String query = "DELETE FROM " + DBWorkspace.tableName + " WHERE title = ?";
 
@@ -178,7 +179,7 @@ public class Table {
 
             preparedStatement.executeUpdate();
 
-            System.out.println("Deleted products with title = \"" + title + "\"");
+            System.out.println("Deleted product with title = \"" + title + "\"");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -195,7 +196,7 @@ public class Table {
 
             preparedStatement.executeUpdate();
 
-            System.out.println("Deleted products with id = " + id);
+            System.out.println("Deleted product with id = " + id);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -213,14 +214,14 @@ public class Table {
 
             preparedStatement.executeUpdate();
 
-            System.out.println("Deleted products with title = \"" + title + "\" and id = " + id);
+            System.out.println("Deleted product with title = \"" + title + "\" and id = " + id);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
 
-    //update
+    //update; code - 17
     public static void updateProduct(int id, String title){
         String query = "UPDATE " + DBWorkspace.tableName + " SET title = ? WHERE id = ?";
 

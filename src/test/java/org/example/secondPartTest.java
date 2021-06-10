@@ -69,7 +69,7 @@ public class secondPartTest {
 
             ExecutorService executor = Executors.newFixedThreadPool(10);
 
-            for(int i = 0; i < 3; i++) {
+           /* for(int i = 0; i < 3; i++) {
                 executor.execute(new Decryptor(queueEncrypted, queueDecrypted));
             }
 
@@ -81,7 +81,7 @@ public class secondPartTest {
             for(int i = 0; i < 4; i++)
             {
                 executor.execute(new Encryptor(queueAnswered, sendingPacketBlockingQueue));
-            }
+            }*/
             executor.shutdown();
         }
     }

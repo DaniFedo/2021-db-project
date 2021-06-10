@@ -1,12 +1,15 @@
 package org.example;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Process {
 
-    public byte[] process(byte[] Packet) throws InterruptedException {
-
+    public static byte[] process(byte[] Packet) throws Exception {
+/*
         //encrypted income of Packets in bytes
         BlockingQueue<byte[]> queueEncrypted = new LinkedBlockingQueue<>(100);
 
@@ -18,23 +21,16 @@ public class Process {
 
         BlockingQueue<Packet> queueForSending = new LinkedBlockingQueue<>(100);
 
-        queueEncrypted.put(Packet);
+        queueEncrypted.put(Packet);*/
 
-        for(int i = 0; i < 3; i++) {
-            new Thread(new Decryptor(queueEncrypted, queueDecrypted)).join();
-        }
+        Packet decryptedPacket = Decryptor.decrypt(Packet);
 
-        for(int i = 0; i < 4; i++)
-        {
-            new Thread(new Processor(queueDecrypted, queueAnswered)).join();
-        }
+        Packet processedPacket = Processor.operate(decryptedPacket);
 
-        for(int i = 0; i < 4; i++) {
-            new Thread(new Encryptor(queueAnswered, queueForSending)).join();
-        }
+
+        return Encryptor.encode(processedPacket);
 
 
 
-        return  queueForSending.take().packetPackaging();
     }
 }

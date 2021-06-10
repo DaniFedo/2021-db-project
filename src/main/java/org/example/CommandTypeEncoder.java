@@ -5,32 +5,33 @@ import lombok.Getter;
 public class CommandTypeEncoder {
     static public final int
             PRODUCT = 1,
-            GROUP = 2;
+            PRODUCT_EXTENDED = 2;
 
     static public final int
-            //add an amount of product(3) OR add a group(4)
             CREATE           = 4,
 
-            //read an amount of product(1) OR *something new for future labs*
             READ             = 8,
 
-            //update the price on the product(6) OR update name of product on the group(5)
             UPDATE           = 16,
 
-            //delete an amount of product(2) OR *something new for future labs*
-            DELETE           = 32;
+            DELETE           = 32,
+
+            LIST_BY_CRITERIA = 64;
+
+
 
     static public final int
             PRODUCT_CREATE           = PRODUCT ^ CREATE,
             PRODUCT_READ             = PRODUCT ^ READ,
             PRODUCT_UPDATE           = PRODUCT ^ UPDATE,
-            PRODUCT_DELETE           = PRODUCT ^ DELETE;
+            PRODUCT_DELETE           = PRODUCT ^ DELETE,
+            PRODUCT_LIST_BY_CRITERIA = PRODUCT ^ LIST_BY_CRITERIA;
 
     static public final int
-            GROUP_CREATE           = GROUP ^ CREATE,
-            GROUP_READ             = GROUP ^ READ,
-            GROUP_UPDATE           = GROUP ^ UPDATE,
-            GROUP_DELETE           = GROUP ^ DELETE;
+            GROUP_CREATE           = PRODUCT_EXTENDED ^ CREATE,
+            GROUP_READ             = PRODUCT_EXTENDED ^ READ,
+            GROUP_UPDATE           = PRODUCT_EXTENDED ^ UPDATE,
+            GROUP_DELETE           = PRODUCT_EXTENDED ^ DELETE;
 
     public CommandTypeEncoder(int INCOMING_COMMAND_TYPE) throws Exception {
         isProduct = isProduct(INCOMING_COMMAND_TYPE);
@@ -47,7 +48,7 @@ public class CommandTypeEncoder {
     //shows original command code
     static int getTypeCommandCode(int INCOMING_COMMAND_TYPE) {
         boolean IS_PRODUCT = isProduct(INCOMING_COMMAND_TYPE);
-        return INCOMING_COMMAND_TYPE ^ (IS_PRODUCT ? PRODUCT : GROUP);
+        return INCOMING_COMMAND_TYPE ^ (IS_PRODUCT ? PRODUCT : PRODUCT_EXTENDED);
     }
 
     //shows original command name
@@ -66,9 +67,8 @@ public class CommandTypeEncoder {
             case DELETE:
                 return "DELETE";
 
-            /* for future
             case LIST_BY_CRITERIA:
-                return "LIST_BY_CRITERIA";*/
+                return "LIST_BY_CRITERIA";
 
             default:
                 throw new Exception("Undefined INCOMING_COMMAND_TYPE");

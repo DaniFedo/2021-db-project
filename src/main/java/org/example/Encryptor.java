@@ -2,9 +2,15 @@ package org.example;
 
 import java.util.concurrent.BlockingQueue;
 
-public class Encryptor extends Thread{
+public class Encryptor{
 
-    private final BlockingQueue<Packet> decryptedPacketBlockingQueue;
+    public static byte[] encode(Packet operatedPacket) throws Exception {
+
+        operatedPacket.message.encode(operatedPacket.secretKey);
+
+        return operatedPacket.packetPackaging();
+    }
+    /*private final BlockingQueue<Packet> decryptedPacketBlockingQueue;
     private final BlockingQueue<Packet> sendingPacketBlockingQueue;
 
     public Encryptor(BlockingQueue<Packet> decryptedPacketBlockingQueue, BlockingQueue<Packet> sendingPacketBlockingQueue) {
@@ -32,6 +38,6 @@ public class Encryptor extends Thread{
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 }
