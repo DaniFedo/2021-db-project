@@ -138,7 +138,7 @@ public class Table {
             preparedStatement.setString(1, token);
             ResultSet answer = preparedStatement.executeQuery();
 
-            System.out.println(answer.getInt("id"));
+           
             return answer.getInt("id");
 
         } catch (SQLException e) {
