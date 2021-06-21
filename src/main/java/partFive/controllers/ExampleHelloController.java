@@ -4,13 +4,16 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import org.example.Database;
 import org.example.Table;
+import org.json.JSONObject;
 import partFive.dto.Response;
 import partFive.models.User;
 import partFive.views.View;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ExampleHelloController {
     private static View view;
@@ -68,7 +71,7 @@ public class ExampleHelloController {
 
              loginId = getLogin(query);
              user.setId(loginId);
-             user.setProduct(null);
+             user.setMessage(null);
              password = getPassword(query);
              System.out.println("login is " + loginId + " password is " + password);
 
@@ -119,8 +122,18 @@ public class ExampleHelloController {
         return Integer.parseInt(productIdTest);
     }
 
+    private static String getTitle(HttpExchange httpExchange) throws IOException {
+        int reading = httpExchange.getRequestBody().read();
+        String result = "";
+        while(reading != -1)
+        {
+            result += (char)reading;
+            reading = httpExchange.getRequestBody().read();
+        }
+        return result;
+    }
+
     public static void serve(HttpExchange httpExchange) throws IOException {
-        String objectId = "";
 
         //secret is secretHeHe
         //password is testPassword
@@ -142,22 +155,42 @@ public class ExampleHelloController {
             login(httpExchange);
         }
 
-        //System.out.println(subPath);
-        System.out.println("header is " + authToken);
+        System.out.println(subPath);
+        //System.out.println("header is " + authToken);
         if(subPath.contains("api/good/")) {
             if(authorize(authToken)){
                 int id = parseSubPathForId(subPath);
 
                 Database.connect();
                 response.setStatusCode(200);
-                user.setProduct(Table.showProductById(id));
+                user.setMessage(Table.showProductById(id));
                 user.setId(getId(authToken));
                 Database.close();
             }
             else{
                 response.setStatusCode(403);
+                user.setId(null);
+                user.setMessage(null);
             }
 
+        }
+
+        else if(subPath.contains("api/good"))
+        {
+            String[] wrongInput = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
+            String jsonString = getTitle(httpExchange);
+            JSONObject json = new JSONObject(jsonString);
+            String title = json.getString("title");
+            
+            if(Arrays.stream(wrongInput).anyMatch(title::contains) || title.isEmpty())
+                response.setStatusCode(409);
+            else {
+
+                Database.connect();
+                user.setMessage(Table.addProduct(title));
+                Database.close();
+                response.setStatusCode(201);
+            }
         }
 
 
@@ -169,6 +202,7 @@ public class ExampleHelloController {
         response.setTemplate("view_user");
         response.setData(user);
         response.setHttpExchange(httpExchange);
+
 
         view.view(response);
     }

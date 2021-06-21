@@ -148,7 +148,7 @@ public class Table {
         }
     }
     //create product; code - 5
-    public static void addProduct(String title) {
+    public static String addProduct(String title) {
         String query = "INSERT INTO " + DBWorkspace.tableName + " (title) VALUES(?)";
 
         try {
@@ -157,11 +157,12 @@ public class Table {
             preparedStatement.setString(1, title);
 
             preparedStatement.executeUpdate();
-            System.out.println("Added new element: " + title);
+            return "Added new element: " + title;
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
 
