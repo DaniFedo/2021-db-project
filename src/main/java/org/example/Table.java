@@ -1,5 +1,8 @@
 package org.example;
 
+import partFive.HttpServerOneMethod;
+import partFive.controllers.ExampleHelloController;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -49,23 +52,101 @@ public class Table {
     }
 
     //create table
-    public static void create() {
-        String query = "CREATE TABLE IF NOT EXISTS " + DBWorkspace.tableName +
-                " (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT)";
+    public static void create(String tableName) {
 
+        String query;
+        if(tableName == DBWorkspace.tableName) {
+             query = "CREATE TABLE IF NOT EXISTS " + DBWorkspace.tableName +
+                    " (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT)";
+        }
+
+        else {
+             query = "CREATE TABLE IF NOT EXISTS " + tableName +
+                    " (id INTEGER PRIMARY KEY AUTOINCREMENT, password TEXT, token TEXT)";
+        }
         try {
             Statement statement = Database.connection.createStatement();
 
             statement.execute(query);
 
-            System.out.println("Table " + DBWorkspace.tableName + " created or already exists");
+            System.out.println("Table " + tableName + " created or already exists");
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
     }
 
+    public static String lookForUniqToken(int id, String password){
+        String query = "SELECT * FROM " + HttpServerOneMethod.TableName +
+                " WHERE id = ? AND password = ?";
 
+        try {
+            PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
+
+            preparedStatement.setInt(1, id);
+            preparedStatement.setString(2, password);
+            ResultSet answer = preparedStatement.executeQuery();
+
+            return answer.getString("token");
+
+        } catch (SQLException e) {
+        }
+        return null;
+    }
+
+    public static boolean checkUniqToken(String token){
+        String query = "SELECT * FROM " + HttpServerOneMethod.TableName +
+                " WHERE token = ?";
+
+        try {
+            PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
+
+            preparedStatement.setString(1, token);
+            ResultSet answer = preparedStatement.executeQuery();
+
+            if(answer.next() == true) return true;
+            return false;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public static int getIdByToken(String token){
+        String query = "SELECT id FROM " + HttpServerOneMethod.TableName +
+                " WHERE token = ?";
+
+        try {
+            PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
+
+            preparedStatement.setString(1, token);
+            ResultSet answer = preparedStatement.executeQuery();
+
+            System.out.println(answer.getInt("id"));
+            return answer.getInt("id");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 1;
+    }
+
+
+    public static void addCustomer(String password, String token){
+        String query = "INSERT INTO " + HttpServerOneMethod.TableName + " (password, token) VALUES(?, ?)";
+
+        try {
+            PreparedStatement preparedStatement = Database.connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+
+            preparedStatement.setString(1, password);
+            preparedStatement.setString(2, token);
+
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     //create product; code - 5
     public static void addProduct(String title) {
         String query = "INSERT INTO " + DBWorkspace.tableName + " (title) VALUES(?)";
@@ -134,7 +215,7 @@ public class Table {
 
 
     //read; code - 9
-    public static void showProductById(int id){
+    public static String showProductById(int id){
         String query = "SELECT * FROM " + DBWorkspace.tableName + " WHERE id = ?";
 
         try {
@@ -142,12 +223,16 @@ public class Table {
 
             preparedStatement.setInt(1, id);
 
-            System.out.println("Here is your product:");
-            showProducts(preparedStatement.executeQuery());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            //System.out.println("Here is your product:");
+            //showProducts(preparedStatement.executeQuery());
+
+            return resultSet.getInt("id") + " - " + resultSet.getString("title");
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            ExampleHelloController.response.setStatusCode(404);
         }
+        return null;
     }
 
     public static void showAllProducts() {

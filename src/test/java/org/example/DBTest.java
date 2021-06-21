@@ -10,7 +10,7 @@ public class DBTest {
     {
         Database.connect();
 
-        Table.create();
+        Table.create(DBWorkspace.tableName);
 
         Database.close();
     }
