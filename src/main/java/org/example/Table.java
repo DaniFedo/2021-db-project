@@ -1,7 +1,7 @@
 package org.example;
 
-import partFive.HttpServerOneMethod;
-import partFive.controllers.ExampleHelloController;
+import partFive.MyHttpServer;
+import partFive.controllers.Controller;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -51,6 +51,22 @@ public class Table {
         return null;
     }
 
+    public static int maxID()
+    {
+        String query = "SELECT MAX(id) FROM " + DBWorkspace.tableName;
+
+        try {
+            Statement statement = Database.connection.createStatement();
+            //showProducts(statement.executeQuery(query));
+            //return statement.executeQuery(query);
+            return statement.executeQuery(query).getInt(1);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     //create table
     public static void create(String tableName) {
 
@@ -77,7 +93,7 @@ public class Table {
     }
 
     public static String lookForUniqToken(int id, String password){
-        String query = "SELECT * FROM " + HttpServerOneMethod.TableName +
+        String query = "SELECT * FROM " + MyHttpServer.TableName +
                 " WHERE id = ? AND password = ?";
 
         try {
@@ -95,7 +111,7 @@ public class Table {
     }
 
     public static boolean checkUniqToken(String token){
-        String query = "SELECT * FROM " + HttpServerOneMethod.TableName +
+        String query = "SELECT * FROM " + MyHttpServer.TableName +
                 " WHERE token = ?";
 
         try {
@@ -113,7 +129,7 @@ public class Table {
         return false;
     }
     public static int getIdByToken(String token){
-        String query = "SELECT id FROM " + HttpServerOneMethod.TableName +
+        String query = "SELECT id FROM " + MyHttpServer.TableName +
                 " WHERE token = ?";
 
         try {
@@ -130,10 +146,28 @@ public class Table {
         }
         return 1;
     }
+    public static boolean checkWhetherAlive(int id){
+        String query = "SELECT * FROM " + DBWorkspace.tableName +
+                " WHERE id = ?";
+
+        try {
+            PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
+
+            preparedStatement.setInt(1, id);
+            ResultSet answer = preparedStatement.executeQuery();
+
+            return answer.next();
+
+        } catch (SQLException e) {
+            return false;
+        }
+
+    }
+
 
 
     public static void addCustomer(String password, String token){
-        String query = "INSERT INTO " + HttpServerOneMethod.TableName + " (password, token) VALUES(?, ?)";
+        String query = "INSERT INTO " + MyHttpServer.TableName + " (password, token) VALUES(?, ?)";
 
         try {
             PreparedStatement preparedStatement = Database.connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -225,13 +259,11 @@ public class Table {
             preparedStatement.setInt(1, id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
-            //System.out.println("Here is your product:");
-            //showProducts(preparedStatement.executeQuery());
 
             return resultSet.getInt("id") + " - " + resultSet.getString("title");
 
         } catch (SQLException e) {
-            ExampleHelloController.response.setStatusCode(404);
+            Controller.response.setStatusCode(404);
         }
         return null;
     }
@@ -307,22 +339,25 @@ public class Table {
     }
 
 
+
+
     //update; code - 17
     public static void updateProduct(int id, String title){
-        String query = "UPDATE " + DBWorkspace.tableName + " SET title = ? WHERE id = ?";
+                String query = "UPDATE " + DBWorkspace.tableName + " SET title = ? WHERE id = ?";
 
-        try
-        {
-            PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
+                try {
+                    PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
 
-            preparedStatement.setString(1, title);
-            preparedStatement.setInt(2, id);
+                    preparedStatement.setString(1, title);
+                    preparedStatement.setInt(2, id);
 
-            preparedStatement.executeUpdate();
+                    preparedStatement.executeUpdate();
+/*
+            System.out.println("Updated product with id = " + id + " on new title = \"" + title + "\"");*/
+                } catch (SQLException e) {
+                    Controller.response.setStatusCode(404);
+                }
 
-            System.out.println("Updated product with id = " + id + " on new title = \"" + title + "\"");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
     }
 }

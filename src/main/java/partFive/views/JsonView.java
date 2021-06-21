@@ -37,8 +37,7 @@ public class JsonView implements View {
 
             outputStream.write(responseBody.getBytes());
             outputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
         }
     }
 }
