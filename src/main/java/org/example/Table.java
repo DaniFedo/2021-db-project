@@ -1,5 +1,7 @@
 package org.example;
 
+import org.sqlite.SQLiteException;
+import org.sqlite.core.DB;
 import partFive.MyHttpServer;
 import partFive.controllers.Controller;
 
@@ -9,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class Table {
+
 
     private static void showProducts(ResultSet resultSet) {
         //ResultSet resultSet = selectAllProducts();
@@ -71,14 +74,17 @@ public class Table {
     public static void create(String tableName) {
 
         String query;
-        if(tableName == DBWorkspace.tableName) {
-             query = "CREATE TABLE IF NOT EXISTS " + DBWorkspace.tableName +
-                    " (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT)";
+        if(tableName.equals("Product")) {
+             query = "CREATE TABLE IF NOT EXISTS Product " +
+                    " (NameOfProduct VARCHAR(45) PRIMARY KEY, Description VARCHAR(45), Manufacturer VARCHAR(45)," +
+                     " Amount int, Price VARCHAR(32), ProductGroup VARCHAR(45), " +
+                     " FOREIGN KEY (ProductGroup) REFERENCES GroupProduct (NameOfGroup) ON DELETE CASCADE" +
+                     " ON UPDATE CASCADE);";
         }
 
         else {
              query = "CREATE TABLE IF NOT EXISTS " + tableName +
-                    " (id INTEGER PRIMARY KEY AUTOINCREMENT, password TEXT, token TEXT)";
+                    " (NameOfGroup VARCHAR(45) PRIMARY KEY, Description VARCHAR(45))";
         }
         try {
             Statement statement = Database.connection.createStatement();
@@ -182,21 +188,82 @@ public class Table {
         }
     }
     //create product; code - 5
-    public static String addProduct(String title) {
-        String query = "INSERT INTO " + DBWorkspace.tableName + " (title) VALUES(?)";
+    public static String addProduct(String title, String description, String manufacturer,
+                                    String Price, String ProductGroup) {
+
+        String query = "INSERT INTO " + DBWorkspace.tableName + " (NameOfProduct, Description, Manufacturer" +
+                ", Price, ProductGroup) VALUES(?, ?, ?, ?, ?)";
 
         try {
             PreparedStatement preparedStatement = Database.connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
             preparedStatement.setString(1, title);
+            preparedStatement.setString(2, description);
+            preparedStatement.setString(3, manufacturer);
+            preparedStatement.setString(4, Price);
+            preparedStatement.setString(5, ProductGroup);
 
             preparedStatement.executeUpdate();
             return "Added new element: " + title;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("This product already exists");
         }
         return null;
+    }
+
+    public static String addGroup(String title, String description) {
+
+        String query = "INSERT INTO " + DBWorkspace.productTableName + " (NameOfGroup, Description) VALUES(?, ?)";
+
+        try {
+            PreparedStatement preparedStatement = Database.connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+
+            preparedStatement.setString(1, title);
+            preparedStatement.setString(2, description);
+
+            preparedStatement.executeUpdate();
+            return "Added new group: " + title;
+
+        } catch (SQLException e) {
+            System.out.println("Group with name " + title + " already exists");
+        }
+        return null;
+    }
+    public static void deleteGroup(String title){
+        String query = "DELETE FROM " + DBWorkspace.productTableName + " WHERE NameOfGroup = ?";
+
+        try
+        {
+            PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
+
+            preparedStatement.setString(1, title);
+
+            preparedStatement.executeUpdate();
+
+            deleteProductByGroup(title);
+
+            System.out.println("Deleted group with title = \"" + title + "\"");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void updateGroup(String oldTitle, String newTitle, String newDescription){
+        String query = "UPDATE " + DBWorkspace.productTableName + " SET NameOfGroup = ?, Description = ? WHERE NameOfGroup = ?";
+
+        try {
+            PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
+
+            preparedStatement.setString(1, newTitle);
+            preparedStatement.setString(2, newDescription);
+            preparedStatement.setString(3, oldTitle);
+
+            preparedStatement.executeUpdate();
+/*
+            System.out.println("Updated product with id = " + id + " on new title = \"" + title + "\"");*/
+        } catch (SQLException e) {
+            Controller.response.setStatusCode(404);
+        }
     }
 
 
@@ -287,8 +354,23 @@ public class Table {
 
     //delete; code - 33
     public static void deleteProduct(String title){
-        String query = "DELETE FROM " + DBWorkspace.tableName + " WHERE title = ?";
+        String query = "DELETE FROM " + DBWorkspace.tableName + " WHERE NameOfProduct = ?";
 
+        try
+        {
+            PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
+
+            preparedStatement.setString(1, title);
+
+            preparedStatement.executeUpdate();
+
+            System.out.println("Deleted product with title = \"" + title + "\"");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void deleteProductByGroup(String title){
+        String query = "DELETE FROM " + DBWorkspace.tableName + " WHERE ProductGroup = ?";
         try
         {
             PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
@@ -342,22 +424,94 @@ public class Table {
 
 
     //update; code - 17
-    public static void updateProduct(int id, String title){
-                String query = "UPDATE " + DBWorkspace.tableName + " SET title = ? WHERE id = ?";
+    public static void updateProduct(String oldNameOfProduct, String newNameOfProduct, String description, String manufacturer,
+                                     String Price, String ProductGroup){
+        boolean first = true;
+       /* String query =
+                "UPDATE Product SET Description = ?,  Manufacturer = ?,  ProductGroup = ? WHERE NameOfProduct = ?";
+        */
+        String query = "UPDATE " + DBWorkspace.tableName + " SET";
 
-                try {
-                    PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
+        if(!oldNameOfProduct.isEmpty()) {
+            if (!newNameOfProduct.isEmpty()) {
+                query += " NameOfProduct = ?";
+                first = false;
+            }
 
-                    preparedStatement.setString(1, title);
-                    preparedStatement.setInt(2, id);
+            if (!description.isEmpty()) {
+                if (!first) query += ", ";
+                query += " Description = ?";
+                first = false;
+            }
+            if (!manufacturer.isEmpty()) {
+                if (!first) query += ", ";
+                query += " Manufacturer = ?";
+            }
 
-                    preparedStatement.executeUpdate();
-/*
-            System.out.println("Updated product with id = " + id + " on new title = \"" + title + "\"");*/
-                } catch (SQLException e) {
-                    Controller.response.setStatusCode(404);
-                }
+            if (!Price.isEmpty()) {
+                if (!first) query += ", ";
+                query += " Price = ?";
+            }
 
+            if (!ProductGroup.isEmpty()) {
+                if (!first) query += ", ";
+                query += " ProductGroup = ?";
+            }
+
+            query += " WHERE NameOfProduct = ?";
+            if (first)
+                System.out.println("No input");
+            else
+                System.out.println(query);
+        }
+        else
+        {
+            System.out.println("Enter old title of the product");
+        }
+
+       try {
+           try (PreparedStatement preparedStatement = Database.connection.prepareStatement(query)) {
+
+               for(int i = 1; i < 6; i++) {
+                   String variable = "";
+                   if(i == 1 & !newNameOfProduct.isEmpty())  variable = newNameOfProduct;
+                   else if(i <= 2 & !description.isEmpty())
+                   {
+                       variable = description;
+                       description = "";
+                   }
+                   else if(i <= 3 & !manufacturer.isEmpty())
+                   {
+                       variable = manufacturer;
+                       manufacturer = "";
+                   }
+                   else if(i <= 4 & !Price.isEmpty())  {
+                       variable = Price;
+                       Price = "";
+                   }
+                   else if(i <= 5 & !ProductGroup.isEmpty())  {
+                       variable = ProductGroup;
+                       ProductGroup = "";
+                   }
+                   else if(i <= 6 & !oldNameOfProduct.isEmpty())  {
+                       variable = oldNameOfProduct;
+                       oldNameOfProduct = "";
+                   }
+                   preparedStatement.setString(i, variable);
+               }
+
+               preparedStatement.executeUpdate();
+           }
+
+           //System.out.println("Updated product with id = " + id + " on new title = \"" + title + "\"");*//*
+        } catch (SQLException e) {
+
+
+               System.out.println("Wrong group input");
+
+           e.printStackTrace();
+           Controller.response.setStatusCode(404);
+        }
 
     }
 }

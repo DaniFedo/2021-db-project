@@ -25,7 +25,7 @@ public class MyHttpServer {
 
         Table.create(TableName);
         Table.create(DBWorkspace.tableName);
-        Table.addProduct("Watermelon");
+        //Table.addProduct("Watermelon");
 
         Table.addCustomer("fed3b61b26081849378080b34e693d2e",
                 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6InRlc3RQYXNzd29yZCIsImlhdCI6MTUxNjIzOTAyMn0.p1cdLX_lWk8TXb15EI3DD4lDsp6k7L_xeAdmqkXZk00");

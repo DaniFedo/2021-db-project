@@ -164,7 +164,7 @@ public class Controller {
         else if(httpExchange.getRequestMethod().equals("PUT")){
 
             Database.connect();
-            model.setMessage(Table.addProduct(title));
+            //model.setMessage(Table.addProduct(title));
             model.setId(null);
             Database.close();
             response.setStatusCode(201);
@@ -207,7 +207,7 @@ public class Controller {
             Database.connect();
             if(Table.checkWhetherAlive(id)) {
 
-                Table.updateProduct(id, title);
+                //Table.updateProduct(id, title);
                 Database.close();
                 model.setMessage("Updated product with id = " + id + " on new title = " + title);
                 //smth wrong with 204, so we use 202 instead

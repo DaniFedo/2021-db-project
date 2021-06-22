@@ -7,7 +7,9 @@ import javax.xml.crypto.Data;
 public class DBWorkspace {
 
     public final static String dbName =  "database.db";
-    public final static String tableName = "myTable";
+    public static final String productTableName = "GroupProduct";
+    public static final String tableName = "Product";
+    //public final static String tableName = "myTable";
 
     public static void main(String args[]) throws Exception {
 
