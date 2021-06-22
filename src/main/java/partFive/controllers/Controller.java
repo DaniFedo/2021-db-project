@@ -294,7 +294,7 @@ public class Controller {
 
                             Database.connect();
                             response.setStatusCode(200);
-                            model.setMessage(Table.showProductById(id));
+                            //model.setMessage(Table.showProduct(id));
                             Database.close();
                             model.setId(getId(authToken));
                     }

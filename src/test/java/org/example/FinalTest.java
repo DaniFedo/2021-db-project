@@ -25,16 +25,18 @@ public class FinalTest {
         Database.connect();
         Table.addGroup("Round", "round products");
         Table.addProduct("Watermelon", "test", "test", "test", "Round");
-        Table.updateProductAmount("Watermelon", 10);
+        /*Table.updateProductAmount("Watermelon", 10);
         Table.updateProductAmount("Watermelon", -7);
-        
+*/
 
 
         /*Table.addProduct("Watermelon2", "test", "test", "test", "Round");
         Table.updateGroup("Round", "NewName", "newDescr");*/
         //Table.deleteGroup("Round");
-        /*Table.updateProduct("Watermelon", "newName", "New description",
-                "NewManufacturer", "", "Round");*/
+        Table.updateProduct("Watermelon", "anotherNewName", "",
+                "", "", "");
+        Table.showProduct("Watermelon", "test",
+                "test", "test", "Round", 9);
         //Table.deleteProduct("Watermelon");
         Database.close();
 

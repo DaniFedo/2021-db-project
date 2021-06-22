@@ -5,6 +5,7 @@ import org.sqlite.core.DB;
 import partFive.MyHttpServer;
 import partFive.controllers.Controller;
 
+import javax.management.Query;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,7 +20,9 @@ public class Table {
         //System.out.println(resultSet.next());
         try {
             while (resultSet.next()) {
-                System.out.println(resultSet.getInt("id") + "\t" + resultSet.getString("title"));
+                System.out.println(resultSet.getString("NameOfProduct") + "\t" + resultSet.getString("Description")
+                        + "\t" + resultSet.getString("Manufacturer") + "\t" + resultSet.getInt("Amount")
+                        + "\t" + resultSet.getString("Price") + "\t" + resultSet.getString("ProductGroup"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -172,6 +175,7 @@ public class Table {
 
 
 
+
     public static void addCustomer(String password, String token){
         String query = "INSERT INTO " + MyHttpServer.TableName + " (password, token) VALUES(?, ?)";
 
@@ -315,19 +319,145 @@ public class Table {
 
     }
 
+    private static String fullfillingQuery(String oldNameOfProduct, String newNameOfProduct, String description, String manufacturer,
+                                    String Price, String ProductGroup, int Amount, String query)
+    {
+        boolean first = true;
+        if(!oldNameOfProduct.isEmpty()) {
+            if (query.contains("WHERE")) {
+                query += " NameOfProduct = ?";
+                first = false;
+            }
+            if (!newNameOfProduct.isEmpty()) {
+
+                query += " NameOfProduct = ?";
+                first = false;
+            }
+
+            if (!description.isEmpty()) {
+                if (!first)
+                {
+                    if (query.contains("SET")) query += ", ";
+                    else if (query.contains("WHERE")) query += " AND ";
+
+                }
+                query += " Description = ?";
+                first = false;
+            }
+            if (!manufacturer.isEmpty()) {
+                if (!first)
+                {
+                    if (query.contains("SET")) query += ", ";
+                    else if (query.contains("WHERE")) query += " AND ";
+
+                }
+                query += " Manufacturer = ?";
+            }
+
+            if (!Price.isEmpty()) {
+                if (!first)
+                {
+                    if (query.contains("SET")) query += ", ";
+                    else if (query.contains("WHERE")) query += " AND ";
+
+                }
+                query += " Price = ?";
+            }
+
+            if (!ProductGroup.isEmpty()) {
+                if (!first)
+                {
+                    if (query.contains("SET")) query += ", ";
+                    else if (query.contains("WHERE")) query += " AND ";
+
+                }
+                query += " ProductGroup = ?";
+            }
+            if (Amount != 0) {
+                if (!first) query += " AND ";
+                query += " Amount = ?";
+            }
+
+            if (first)
+                System.out.println("No input");
+            else
+                System.out.println(query);
+        }
+        else
+        {
+            System.out.println("Enter old title of the product");
+        }
+        return query;
+    }
+
 
     //read; code - 9
-    public static String showProductById(int id){
-        String query = "SELECT * FROM " + DBWorkspace.tableName + " WHERE id = ?";
+    public static ResultSet showProduct(String oldNameOfProduct, String description, String manufacturer,
+                                     String Price, String ProductGroup, int Amount){
+
+        //String query = "SELECT * FROM " + DBWorkspace.tableName + " WHERE id = ?";
+        String query = "SELECT * FROM " + DBWorkspace.tableName + " WHERE ";
+
+
+        query = fullfillingQuery(oldNameOfProduct, "", description, manufacturer,
+                Price, ProductGroup, Amount, query);
 
         try {
             PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
+            for(int i = 1; i < 7; i++) {
+                String variable = "";
+                if(i == 1 & !oldNameOfProduct.isEmpty())  {
+                    variable = oldNameOfProduct;
+                    oldNameOfProduct = "";
+                }
+                else if(i <= 2 & !description.isEmpty())
+                {
+                    variable = description;
+                    description = "";
+                }
+                else if(i <= 3 & !manufacturer.isEmpty())
+                {
+                    variable = manufacturer;
+                    manufacturer = "";
+                }
+                else if(i <= 4 & !Price.isEmpty())  {
+                    variable = Price;
+                    Price = "";
+                }
+                else if(i <= 5 & !ProductGroup.isEmpty())  {
+                    variable = ProductGroup;
+                    ProductGroup = "";
+                }
+                else if(i <= 6 & !oldNameOfProduct.isEmpty())  {
+                    variable = oldNameOfProduct;
+                    oldNameOfProduct = "";
+                }
+                else if(i <= 7 & Amount != 0)  {
+                    try {
+                        preparedStatement.setInt(i, Amount);
+                    }
+                    catch (Exception e){
+                        break;
+                    }
+                }
+                try {
+                    if(variable!="")
+                        preparedStatement.setString(i, variable);
+                }
+                catch(Exception e)
+                {
+                    break;
+                }
+            }
 
-            preparedStatement.setInt(1, id);
-
+            //System.out.println("query is " + preparedStatement);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            return resultSet.getInt("id") + " - " + resultSet.getString("title");
+            //System.out.println(resultSet.next());
+            showProducts(resultSet);
+            return null;
+
+
 
         } catch (SQLException e) {
             Controller.response.setStatusCode(404);
@@ -432,42 +562,11 @@ public class Table {
         */
         String query = "UPDATE " + DBWorkspace.tableName + " SET";
 
-        if(!oldNameOfProduct.isEmpty()) {
-            if (!newNameOfProduct.isEmpty()) {
-                query += " NameOfProduct = ?";
-                first = false;
-            }
+        query = fullfillingQuery(oldNameOfProduct, newNameOfProduct, description, manufacturer,
+                Price, ProductGroup, 0, query);
+        query += " WHERE NameOfProduct = ?";
 
-            if (!description.isEmpty()) {
-                if (!first) query += ", ";
-                query += " Description = ?";
-                first = false;
-            }
-            if (!manufacturer.isEmpty()) {
-                if (!first) query += ", ";
-                query += " Manufacturer = ?";
-            }
-
-            if (!Price.isEmpty()) {
-                if (!first) query += ", ";
-                query += " Price = ?";
-            }
-
-            if (!ProductGroup.isEmpty()) {
-                if (!first) query += ", ";
-                query += " ProductGroup = ?";
-            }
-
-            query += " WHERE NameOfProduct = ?";
-            if (first)
-                System.out.println("No input");
-            else
-                System.out.println(query);
-        }
-        else
-        {
-            System.out.println("Enter old title of the product");
-        }
+        System.out.println(query);
 
        try {
            try (PreparedStatement preparedStatement = Database.connection.prepareStatement(query)) {
@@ -497,7 +596,8 @@ public class Table {
                        variable = oldNameOfProduct;
                        oldNameOfProduct = "";
                    }
-                   preparedStatement.setString(i, variable);
+                   if(!variable.isEmpty())
+                        preparedStatement.setString(i, variable);
                }
 
                preparedStatement.executeUpdate();

@@ -15,10 +15,10 @@ public class CommandAnalyzator{
     public static void analyze(int commandType, int messageInt) throws Exception {
         String commandName = CommandTypeEncoder.getTypeCommand(commandType);
         Database.connect();
-        if("READ" == commandName) Table.showProductById(messageInt);
+        /*if("READ" == commandName) Table.showProduct(messageInt);
         else if("DELETE" == commandName) Table.deleteProduct(messageInt);
         else if("LIST_BY_CRITERIA" == commandName) Table.showProductsInRange(messageInt);
-        Database.close();
+       */ Database.close();
     }
 
     public static void analyze(int commandType, int messageInt, String messageString) throws Exception{
