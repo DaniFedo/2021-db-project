@@ -192,7 +192,7 @@ public class Table {
                                     String Price, String ProductGroup) {
 
         String query = "INSERT INTO " + DBWorkspace.tableName + " (NameOfProduct, Description, Manufacturer" +
-                ", Price, ProductGroup) VALUES(?, ?, ?, ?, ?)";
+                ", Price, ProductGroup, Amount) VALUES(?, ?, ?, ?, ?, 0)";
 
         try {
             PreparedStatement preparedStatement = Database.connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -505,12 +505,37 @@ public class Table {
 
            //System.out.println("Updated product with id = " + id + " on new title = \"" + title + "\"");*//*
         } catch (SQLException e) {
+           if(e.getMessage().contains("PRIMARYKEY"))
+                System.out.println("Wrong name, duplicates");
+           else
+                System.out.println("Wrong group input");
 
-
-               System.out.println("Wrong group input");
-
-           e.printStackTrace();
+           //e.printStackTrace();
            Controller.response.setStatusCode(404);
+        }
+
+    }
+    public static void updateProductAmount(String nameOfProduct, int change){
+
+        String query = "UPDATE " + DBWorkspace.tableName + " SET Amount = Amount + " + change + " WHERE NameOfProduct = ?";
+
+
+        try {
+            PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
+            preparedStatement.setString(1, nameOfProduct);
+
+
+            preparedStatement.executeUpdate();
+
+
+            //System.out.println("Updated product with id = " + id + " on new title = \"" + title + "\"");*//*
+        } catch (SQLException e) {
+
+
+            System.out.println("Wrong group input");
+
+            e.printStackTrace();
+            Controller.response.setStatusCode(404);
         }
 
     }
