@@ -173,9 +173,6 @@ public class Table {
 
     }
 
-
-
-
     public static void addCustomer(String password, String token){
         String query = "INSERT INTO " + MyHttpServer.TableName + " (password, token) VALUES(?, ?)";
 
@@ -253,20 +250,39 @@ public class Table {
         }
     }
     public static void updateGroup(String oldTitle, String newTitle, String newDescription){
-        String query = "UPDATE " + DBWorkspace.productTableName + " SET NameOfGroup = ?, Description = ? WHERE NameOfGroup = ?";
+        String query = "UPDATE " + DBWorkspace.productTableName + " SET ";
+        query = fullfillingQuery(oldTitle, newTitle, newDescription, "", "", "", 0, query);
+        System.out.println("query is " + query);
 
         try {
             PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
 
-            preparedStatement.setString(1, newTitle);
-            preparedStatement.setString(2, newDescription);
-            preparedStatement.setString(3, oldTitle);
+
+            for(int i = 1; i < 4; i++) {
+                String variable = "";
+                if(i == 1 & !newTitle.isEmpty())  variable = newTitle;
+                else if(i <= 2 & !newDescription.isEmpty())
+                {
+                    variable = newDescription;
+                    newDescription = "";
+                }
+                else if(i <= 2 & !oldTitle.isEmpty())
+                {
+                    variable = oldTitle;
+                    oldTitle = "";
+                }
+
+                if(!variable.isEmpty())
+                    preparedStatement.setString(i, variable);
+            }
 
             preparedStatement.executeUpdate();
-/*
-            System.out.println("Updated product with id = " + id + " on new title = \"" + title + "\"");*/
+
+            updateProductByGroup(oldTitle, newTitle);
+
         } catch (SQLException e) {
             Controller.response.setStatusCode(404);
+            e.printStackTrace();
         }
     }
 
@@ -329,8 +345,10 @@ public class Table {
                 first = false;
             }
             if (!newNameOfProduct.isEmpty()) {
-
-                query += " NameOfProduct = ?";
+                if(query.contains(DBWorkspace.productTableName))
+                    query+= " NameOfGroup = ?";
+                else
+                    query += " NameOfProduct = ?";
                 first = false;
             }
 
@@ -510,6 +528,22 @@ public class Table {
             preparedStatement.executeUpdate();
 
             System.out.println("Deleted product with title = \"" + title + "\"");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void updateProductByGroup(String oldTitle, String newTitle){
+        String query = "UPDATE " + DBWorkspace.tableName + " SET ProductGroup = ? WHERE ProductGroup = ?";
+        try
+        {
+            PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
+
+            preparedStatement.setString(1, newTitle);
+            preparedStatement.setString(2, oldTitle);
+
+            preparedStatement.executeUpdate();
+
+            //System.out.println("Deleted product with title = \"" + title + "\"");
         } catch (SQLException e) {
             e.printStackTrace();
         }
