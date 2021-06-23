@@ -25,6 +25,7 @@ public class FinalTest {
         Database.connect();
         Table.addGroup("Round", "round products");
         Table.addProduct("Watermelon", "test", "test", "test", "Round");
+        Table.addProduct("dasda", "test", "test", "test", "naksndkadl");
         Table.addProduct("Melon", "test", "test", "test", "Round");
 
         Table.updateGroup("Round", "newRound", "newDesc");

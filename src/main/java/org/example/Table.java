@@ -6,10 +6,8 @@ import partFive.MyHttpServer;
 import partFive.controllers.Controller;
 
 import javax.management.Query;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import javax.xml.transform.Result;
+import java.sql.*;
 
 public class Table {
 
@@ -173,6 +171,21 @@ public class Table {
 
     }
 
+    private static ResultSet getAllGroups(){
+        String query = "SELECT NameOfGroup FROM " + DBWorkspace.productTableName;
+
+        try {
+            Statement statement = Database.connection.createStatement();
+            //System.out.println("All groups:");
+            //showProducts(statement.executeQuery(query));
+            //return statement.executeQuery(query);
+            return statement.executeQuery(query);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     public static void addCustomer(String password, String token){
         String query = "INSERT INTO " + MyHttpServer.TableName + " (password, token) VALUES(?, ?)";
 
@@ -190,27 +203,41 @@ public class Table {
     }
     //create product; code - 5
     public static String addProduct(String title, String description, String manufacturer,
-                                    String Price, String ProductGroup) {
+                                    String Price, String ProductGroup) throws SQLException {
 
         String query = "INSERT INTO " + DBWorkspace.tableName + " (NameOfProduct, Description, Manufacturer" +
                 ", Price, ProductGroup, Amount) VALUES(?, ?, ?, ?, ?, 0)";
 
-        try {
-            PreparedStatement preparedStatement = Database.connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-
-            preparedStatement.setString(1, title);
-            preparedStatement.setString(2, description);
-            preparedStatement.setString(3, manufacturer);
-            preparedStatement.setString(4, Price);
-            preparedStatement.setString(5, ProductGroup);
-
-            preparedStatement.executeUpdate();
-            return "Added new element: " + title;
-
-        } catch (SQLException e) {
-            System.out.println("This product already exists");
+        boolean check = false;
+        ResultSet checkingSet = getAllGroups();
+        while(checkingSet.next()) {
+            if (checkingSet.getString("NameOfGroup").equals(ProductGroup)) check = true;
         }
-        return null;
+
+        //System.out.println(check);
+        if(check) {
+            try {
+                PreparedStatement preparedStatement = Database.connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+
+                preparedStatement.setString(1, title);
+                preparedStatement.setString(2, description);
+                preparedStatement.setString(3, manufacturer);
+                preparedStatement.setString(4, Price);
+                preparedStatement.setString(5, ProductGroup);
+
+                preparedStatement.executeUpdate();
+                return "Added new element: " + title;
+
+            } catch (SQLException e) {
+                System.out.println("This product already exists");
+            }
+        }
+        else
+        {
+            System.out.println("You've entered a product group which does not exist");
+        }
+            return null;
+
     }
 
     public static String addGroup(String title, String description) {
@@ -282,7 +309,7 @@ public class Table {
 
         } catch (SQLException e) {
             Controller.response.setStatusCode(404);
-            e.printStackTrace();
+            System.out.println("Group with such name already exists");
         }
     }
 
