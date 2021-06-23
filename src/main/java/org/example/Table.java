@@ -616,7 +616,7 @@ public class Table {
 
     //update; code - 17
     public static void updateProduct(String oldNameOfProduct, String newNameOfProduct, String description, String manufacturer,
-                                     String Price, String ProductGroup){
+                                     String Price, String ProductGroup) throws SQLException {
         boolean first = true;
        /* String query =
                 "UPDATE Product SET Description = ?,  Manufacturer = ?,  ProductGroup = ? WHERE NameOfProduct = ?";
@@ -629,75 +629,105 @@ public class Table {
 
         System.out.println(query);
 
-       try {
-           try (PreparedStatement preparedStatement = Database.connection.prepareStatement(query)) {
+        boolean check = true;
+        if(!ProductGroup.equals("")) {
+            check = false;
+            ResultSet checkingSet = getAllGroups();
+            while (checkingSet.next()) {
+                if (checkingSet.getString("NameOfGroup").equals(ProductGroup)) check = true;
+            }
+        }
+        if(check) {
+            try {
+                try (PreparedStatement preparedStatement = Database.connection.prepareStatement(query)) {
 
-               for(int i = 1; i < 6; i++) {
-                   String variable = "";
-                   if(i == 1 & !newNameOfProduct.isEmpty())  variable = newNameOfProduct;
-                   else if(i <= 2 & !description.isEmpty())
-                   {
-                       variable = description;
-                       description = "";
-                   }
-                   else if(i <= 3 & !manufacturer.isEmpty())
-                   {
-                       variable = manufacturer;
-                       manufacturer = "";
-                   }
-                   else if(i <= 4 & !Price.isEmpty())  {
-                       variable = Price;
-                       Price = "";
-                   }
-                   else if(i <= 5 & !ProductGroup.isEmpty())  {
-                       variable = ProductGroup;
-                       ProductGroup = "";
-                   }
-                   else if(i <= 6 & !oldNameOfProduct.isEmpty())  {
-                       variable = oldNameOfProduct;
-                       oldNameOfProduct = "";
-                   }
-                   if(!variable.isEmpty())
-                        preparedStatement.setString(i, variable);
-               }
+                    for (int i = 1; i < 6; i++) {
+                        String variable = "";
+                        if (i == 1 & !newNameOfProduct.isEmpty()) variable = newNameOfProduct;
+                        else if (i <= 2 & !description.isEmpty()) {
+                            variable = description;
+                            description = "";
+                        } else if (i <= 3 & !manufacturer.isEmpty()) {
+                            variable = manufacturer;
+                            manufacturer = "";
+                        } else if (i <= 4 & !Price.isEmpty()) {
+                            variable = Price;
+                            Price = "";
+                        } else if (i <= 5 & !ProductGroup.isEmpty()) {
+                            variable = ProductGroup;
+                            ProductGroup = "";
+                        } else if (i <= 6 & !oldNameOfProduct.isEmpty()) {
+                            variable = oldNameOfProduct;
+                            oldNameOfProduct = "";
+                        }
+                        if (!variable.isEmpty())
+                            preparedStatement.setString(i, variable);
+                    }
 
-               preparedStatement.executeUpdate();
-           }
+                    preparedStatement.executeUpdate();
+                }
 
-           //System.out.println("Updated product with id = " + id + " on new title = \"" + title + "\"");*//*
-        } catch (SQLException e) {
-           if(e.getMessage().contains("PRIMARYKEY"))
-                System.out.println("Wrong name, duplicates");
-           else
-                System.out.println("Wrong group input");
+                //System.out.println("Updated product with id = " + id + " on new title = \"" + title + "\"");*//*
+            } catch (SQLException e) {
+                if (e.getMessage().contains("PRIMARYKEY"))
+                    System.out.println("Wrong name, duplicates");
+                else
+                    System.out.println("Wrong group input");
 
-           //e.printStackTrace();
-           Controller.response.setStatusCode(404);
+                //e.printStackTrace();
+                Controller.response.setStatusCode(404);
+            }
+        }
+        else
+        {
+            System.out.println("You've entered the wrong productGroup.");
         }
 
+    }
+    private static boolean checkProductAmount(String nameOfProduct, int change){
+        String query = "SELECT Amount FROM " + DBWorkspace.tableName + " WHERE NameOfProduct = \"" + nameOfProduct + "\"";
+
+        try {
+            Statement statement = Database.connection.createStatement();
+            if(statement.executeQuery(query).getInt("Amount") + change < 0)
+            {
+                return false;
+            }
+            else return true;
+
+
+            //System.out.println("Updated product with id = " + id + " on new title = \"" + title + "\"");*//*
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return false;
     }
     public static void updateProductAmount(String nameOfProduct, int change){
 
         String query = "UPDATE " + DBWorkspace.tableName + " SET Amount = Amount + " + change + " WHERE NameOfProduct = ?";
 
 
-        try {
-            PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
-            preparedStatement.setString(1, nameOfProduct);
+        if(checkProductAmount(nameOfProduct, change)) {
+            try {
+                PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
+                preparedStatement.setString(1, nameOfProduct);
 
 
-            preparedStatement.executeUpdate();
+                preparedStatement.executeUpdate();
 
 
-            //System.out.println("Updated product with id = " + id + " on new title = \"" + title + "\"");*//*
-        } catch (SQLException e) {
+                //System.out.println("Updated product with id = " + id + " on new title = \"" + title + "\"");*//*
+            } catch (SQLException e) {
 
 
-            System.out.println("Wrong group input");
+                System.out.println("Wrong group input");
 
-            e.printStackTrace();
-            Controller.response.setStatusCode(404);
+                e.printStackTrace();
+                Controller.response.setStatusCode(404);
+            }
         }
+        else System.out.println("You can't proceed this operation. Amount can't be less than 0.");
 
     }
 }

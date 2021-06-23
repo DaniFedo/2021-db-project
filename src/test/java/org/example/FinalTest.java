@@ -27,7 +27,10 @@ public class FinalTest {
         Table.addProduct("Watermelon", "test", "test", "test", "Round");
         Table.addProduct("dasda", "test", "test", "test", "naksndkadl");
         Table.addProduct("Melon", "test", "test", "test", "Round");
+        Table.updateProduct("Watermelon", "", "", "", "", "asda");
 
+        Table.updateProductAmount("Watermelon", 10);
+        Table.updateProductAmount("Melon", -21);
         Table.updateGroup("Round", "newRound", "newDesc");
         /*Table.updateProductAmount("Watermelon", 10);
         Table.updateProductAmount("Watermelon", -7);
