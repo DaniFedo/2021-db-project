@@ -9,7 +9,6 @@ public class DBWorkspace {
     public final static String dbName =  "database.db";
     public static final String productTableName = "GroupProduct";
     public static final String tableName = "Product";
-    //public final static String tableName = "myTable";
 
     public static void main(String args[]) throws Exception {
 
@@ -18,16 +17,16 @@ public class DBWorkspace {
 
         //Table.addProduct("first");
 
-        Message message = new Message(5, 123, "TestProduct");
-        Packet packet = new Packet((byte)1,1, message);
-
+        /*Message message = new Message(5, 123, "TestProduct");
+        Packet packet = new Packet((byte)1,1, message);*/
+/*
         StoreClientTCP client1 = new StoreClientTCP();
         client1.startConnection("localhost", 2305);
 
         client1.sendPackage(packet.packetPackaging());
         client1.receive();
 
-        client1.stopConnection();
+        client1.stopConnection();*/
 
         //Table.addProduct("second");
 

@@ -72,11 +72,13 @@ public class StoreServerTCP{
                     if (!Arrays.toString(check).equals(Arrays.toString(maxPacketBuffer))) {
                         //System.out.println("Received(at server): " + Arrays.toString(maxPacketBuffer));
 
-                        byte[] sending = Process.process(maxPacketBuffer);
+                        /*byte[] sending = Process.process(maxPacketBuffer);*/
                         //System.out.println("Sent from server: " + Arrays.toString(sending));
-                        System.out.println(" ");
+                        Message message = new Message(maxPacketBuffer);
+                        //message.decode(message.secretKey);
+                        System.out.println(message);
 
-                        out.write(sending);
+                        out.write(message.messagePackaging());
 
                     } else break;
                 }

@@ -26,11 +26,8 @@ public class StoreClientTCP {
         public void receive() throws Exception {
             byte[] maxPacketBuffer = new byte[Packet.maxLength];
             in.read(maxPacketBuffer);
-            System.out.println("Client with ID " + clientSocket.getLocalPort() + " received a " + Arrays.toString(maxPacketBuffer));
-            //Packet packetForOutput = new Packet(maxPacketBuffer);
-            //System.out.println(CommandTypeEncoder.getTypeCommand(packetForOutput.message.cType));
-            //System.out.println("Client with ID " + clientSocket.getLocalPort() + " received a command: " + packetForOutput.message.cType);
-            //System.out.println("Client with ID " + clientSocket.getLocalPort() + " received a message: " + packetForOutput.message.message);
+            Message message = new Message(maxPacketBuffer);
+            System.out.println("Client with ID " + clientSocket.getLocalPort() + " received a " + message);
 
             System.out.println("-------------------");
         }

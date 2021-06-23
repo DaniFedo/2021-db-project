@@ -11,21 +11,18 @@ import java.security.SecureRandom;
 @Data
 public class Packet
 {
-    public static byte bMagic = 0x13;
-    byte bSrc;
-    long bPktId;
+
     int wLen;
-    short wCrc16_1;
+
     Message message;
     short wCrc16_2;
     public SecretKey secretKey;
-    public static int maxLength = Byte.BYTES * 2 + Long.BYTES + Integer.BYTES * 3 + Short.BYTES * 2 + 100;
+    public static int maxLength = Integer.BYTES * 3 + Short.BYTES  + 100;
 
-    public Packet(byte bSrc, long bPktId, Message message) throws Exception
+    public Packet(Message message) throws Exception
     {
-        this.bSrc = bSrc;
+
         this.message = message;
-        this.bPktId = bPktId;
         keyMaking();
         wLen = message.messageLengthCoded(secretKey);
     }
@@ -47,26 +44,9 @@ public class Packet
     {
         ByteBuffer byteBuffer = ByteBuffer.wrap(encodedPacket);
 
-        if(bMagic != byteBuffer.get()) throw new Exception("Magic number is incorrect!");
-
-        bSrc = byteBuffer.get();
-        bPktId = byteBuffer.getLong();
-        wLen = byteBuffer.getInt();
-
-        wCrc16_1 = byteBuffer.getShort();
-        int firstPartLength = Byte.BYTES * 2 + Long.BYTES + Integer.BYTES;
-        byte[] firstPart = ByteBuffer.allocate(firstPartLength)
-                .put(bMagic)
-                .put(bSrc)
-                .putLong(bPktId)
-                .putInt(wLen).array();
-
-        if(wCrc16_1 != (short)CRC.main(firstPart))
-            throw new Exception("First CRC is not right! Your packet was damaged.");
 
         message = new Message();
         message.setCType(byteBuffer.getInt());
-        message.setBUserId(byteBuffer.getInt());
 
         byte[] messageText = new byte[wLen];
         byteBuffer.get(messageText);
@@ -90,14 +70,6 @@ public class Packet
     public byte[] packetPackaging()
     {
 
-        int firstPartLength = Byte.BYTES * 2 + Long.BYTES + Integer.BYTES;
-        byte[] firstPart = ByteBuffer.allocate(firstPartLength)
-                            .put(bMagic)
-                            .put(bSrc)
-                            .putLong(bPktId)
-                            .putInt(wLen).array();
-        wCrc16_1 = (short) CRC.main(firstPart);
-
         int secondPartLength = message.messageLength();
         byte[] secondPart = ByteBuffer.allocate(secondPartLength)
                             .put(message.messagePackaging()).array();
@@ -106,11 +78,9 @@ public class Packet
 
         byte[] keyEncoded = secretKey.getEncoded();
 
-        int fullLength = firstPartLength + secondPartLength + Short.BYTES * 2 + keyEncoded.length + Integer.BYTES;
+        int fullLength =  secondPartLength + Short.BYTES + keyEncoded.length + Integer.BYTES;
 
         return ByteBuffer.allocate(fullLength)
-                        .put(firstPart)
-                        .putShort(wCrc16_1)
                         .put(secondPart)
                         .putShort(wCrc16_2)
                         .putInt(keyEncoded.length)
