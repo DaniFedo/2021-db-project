@@ -24,14 +24,22 @@ public class FinalTest {
 
         Database.connect();
         Table.addGroup("Round", "round products");
-        Table.addProduct("Watermelon", "test", "test", "test", "Round");
-        Table.addProduct("dasda", "test", "test", "test", "naksndkadl");
-        Table.addProduct("Melon", "test", "test", "test", "Round");
-        Table.updateProduct("Watermelon", "", "", "", "", "asda");
+        Table.addProduct("Watermelon", "test", "test", 1.15, "Round");
+        Table.addProduct("dasda", "test", "test", 2.5, "naksndkadl");
+        Table.addGroup("newRound", "newDesc");
+        Table.addProduct("Melon", "test", "test", 3.5, "newRound");
+        Table.updateProduct("Watermelon", "", "", "", 5.5, "Round");
 
         Table.updateProductAmount("Watermelon", 10);
         Table.updateProductAmount("Melon", -21);
-        Table.updateGroup("Round", "newRound", "newDesc");
+        Table.updateProductAmount("Melon", 10);
+        ;
+        //Table.showAllProducts("Round");
+        //Table.updateProductAmount("Melon", -5);
+        Table.fullPrice();
+        Table.fullPrice("Round");
+        Table.fullPrice("newRound");
+        //Table.showProduct("Watermelon", "", "", "", "", -1);
         /*Table.updateProductAmount("Watermelon", 10);
         Table.updateProductAmount("Watermelon", -7);
 */

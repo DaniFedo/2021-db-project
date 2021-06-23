@@ -33,7 +33,7 @@ public class CommandAnalyzator{
     public static void analyze(int commandType, int messageInt1, int messageInt2) throws Exception{
         String commandName = CommandTypeEncoder.getTypeCommand(commandType);
         Database.connect();
-        if("LIST_BY_CRITERIA" == commandName) Table.showProductsInRange(messageInt1, messageInt2);
+       /* if("LIST_BY_CRITERIA" == commandName) Table.showProductsInRange(messageInt1, messageInt2);*/
         Database.close();
     }
 

@@ -18,13 +18,30 @@ public class Table {
         //System.out.println(resultSet.next());
         try {
             while (resultSet.next()) {
-                System.out.println(resultSet.getString("NameOfProduct") + "\t" + resultSet.getString("Description")
-                        + "\t" + resultSet.getString("Manufacturer") + "\t" + resultSet.getInt("Amount")
-                        + "\t" + resultSet.getString("Price") + "\t" + resultSet.getString("ProductGroup"));
+                System.out.println(/*resultSet.getString("NameOfProduct") + "\t" + resultSet.getString("Description")
+                        + "\t" + resultSet.getString("Manufacturer") + "\t" + */
+
+                        resultSet.getDouble("Amount")
+                        + "\t" + resultSet.getDouble("Price")
+
+                                /*
+                                + "\t" + resultSet.getString("ProductGroup")*/);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    private static double calculateSum(ResultSet resultSet) {
+        double result = 0;
+        try {
+            while (resultSet.next()) {
+                    result +=
+                        resultSet.getDouble("Amount") * resultSet.getDouble("Price");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     private static void showProducts(ResultSet resultSet, int limit) {
@@ -78,7 +95,7 @@ public class Table {
         if(tableName.equals("Product")) {
              query = "CREATE TABLE IF NOT EXISTS Product " +
                     " (NameOfProduct VARCHAR(45) PRIMARY KEY, Description VARCHAR(45), Manufacturer VARCHAR(45)," +
-                     " Amount int, Price VARCHAR(32), ProductGroup VARCHAR(45), " +
+                     " Amount double, Price double, ProductGroup VARCHAR(45), " +
                      " FOREIGN KEY (ProductGroup) REFERENCES GroupProduct (NameOfGroup) ON DELETE CASCADE" +
                      " ON UPDATE CASCADE);";
         }
@@ -203,10 +220,10 @@ public class Table {
     }
     //create product; code - 5
     public static String addProduct(String title, String description, String manufacturer,
-                                    String Price, String ProductGroup) throws SQLException {
+                                    double Price, String ProductGroup) throws SQLException {
 
         String query = "INSERT INTO " + DBWorkspace.tableName + " (NameOfProduct, Description, Manufacturer" +
-                ", Price, ProductGroup, Amount) VALUES(?, ?, ?, ?, ?, 0)";
+                ", Price, ProductGroup, Amount) VALUES(?, ?, ?, ?, ?, 0.0)";
 
         boolean check = false;
         ResultSet checkingSet = getAllGroups();
@@ -222,7 +239,7 @@ public class Table {
                 preparedStatement.setString(1, title);
                 preparedStatement.setString(2, description);
                 preparedStatement.setString(3, manufacturer);
-                preparedStatement.setString(4, Price);
+                preparedStatement.setDouble(4, Price);
                 preparedStatement.setString(5, ProductGroup);
 
                 preparedStatement.executeUpdate();
@@ -278,7 +295,7 @@ public class Table {
     }
     public static void updateGroup(String oldTitle, String newTitle, String newDescription){
         String query = "UPDATE " + DBWorkspace.productTableName + " SET ";
-        query = fullfillingQuery(oldTitle, newTitle, newDescription, "", "", "", 0, query);
+        query = fullfillingQuery(oldTitle, newTitle, newDescription, "", -1, "", -1, query);
         System.out.println("query is " + query);
 
         try {
@@ -316,54 +333,9 @@ public class Table {
 
     //list by criteria; code - 65
 
-    public static void showProductsInRange(int amount) {
-        String query = "SELECT * FROM " + DBWorkspace.tableName + " LIMIT ?, ?";
-
-        try {
-            PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
-
-            preparedStatement.setInt(1, 0);
-            preparedStatement.setInt(2, amount);
-
-            System.out.println("Your first " + amount + " chosen elements:");
-            showProducts(preparedStatement.executeQuery());
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void showProductsInRange(int amount, int offset) {
-        String query = "SELECT * FROM " + DBWorkspace.tableName + " LIMIT ?, ?";
-
-        try {
-            PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
-
-            preparedStatement.setInt(1, offset);
-            preparedStatement.setInt(2, amount);
-
-            System.out.println("Your first " + amount + " chosen elements with offset " + offset + ":");
-            showProducts(preparedStatement.executeQuery());
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void showProductByTitle(String title){
-
-            System.out.println("Products with title = \"" + title + "\":");
-            showProducts(selectProductsByTitle(title));
-    }
-
-    public static void showProductByTitle(String title, int limit){
-        System.out.println("First " + limit + " products with title = \"" + title + "\":");
-        showProducts(selectProductsByTitle(title), limit);
-
-    }
 
     private static String fullfillingQuery(String oldNameOfProduct, String newNameOfProduct, String description, String manufacturer,
-                                    String Price, String ProductGroup, int Amount, String query)
+                                    double Price, String ProductGroup, double Amount, String query)
     {
         boolean first = true;
         if(!oldNameOfProduct.isEmpty()) {
@@ -397,9 +369,10 @@ public class Table {
 
                 }
                 query += " Manufacturer = ?";
+                first = false;
             }
 
-            if (!Price.isEmpty()) {
+            if (Price > 0) {
                 if (!first)
                 {
                     if (query.contains("SET")) query += ", ";
@@ -407,6 +380,7 @@ public class Table {
 
                 }
                 query += " Price = ?";
+                first = false;
             }
 
             if (!ProductGroup.isEmpty()) {
@@ -417,10 +391,12 @@ public class Table {
 
                 }
                 query += " ProductGroup = ?";
+                first = false;
             }
-            if (Amount != 0) {
+            if (Amount >= 0.0) {
                 if (!first) query += " AND ";
                 query += " Amount = ?";
+                first = false;
             }
 
             if (first)
@@ -437,23 +413,23 @@ public class Table {
 
 
     //read; code - 9
-    public static ResultSet showProduct(String oldNameOfProduct, String description, String manufacturer,
-                                     String Price, String ProductGroup, int Amount){
+    public static ResultSet showProduct(String nameOfProduct, String description, String manufacturer,
+                                     double Price, String ProductGroup, double Amount){
 
         //String query = "SELECT * FROM " + DBWorkspace.tableName + " WHERE id = ?";
         String query = "SELECT * FROM " + DBWorkspace.tableName + " WHERE ";
 
 
-        query = fullfillingQuery(oldNameOfProduct, "", description, manufacturer,
+        query = fullfillingQuery(nameOfProduct, "", description, manufacturer,
                 Price, ProductGroup, Amount, query);
 
         try {
             PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
             for(int i = 1; i < 7; i++) {
                 String variable = "";
-                if(i == 1 & !oldNameOfProduct.isEmpty())  {
-                    variable = oldNameOfProduct;
-                    oldNameOfProduct = "";
+                if(i == 1 & !nameOfProduct.isEmpty())  {
+                    variable = nameOfProduct;
+                    nameOfProduct = "";
                 }
                 else if(i <= 2 & !description.isEmpty())
                 {
@@ -465,21 +441,25 @@ public class Table {
                     variable = manufacturer;
                     manufacturer = "";
                 }
-                else if(i <= 4 & !Price.isEmpty())  {
-                    variable = Price;
-                    Price = "";
+                else if(i <= 4 & Price > 0)  {
+                    try {
+                        preparedStatement.setDouble(i, Price);
+                    }
+                    catch (Exception e){
+                        break;
+                    }
                 }
                 else if(i <= 5 & !ProductGroup.isEmpty())  {
                     variable = ProductGroup;
                     ProductGroup = "";
                 }
-                else if(i <= 6 & !oldNameOfProduct.isEmpty())  {
-                    variable = oldNameOfProduct;
-                    oldNameOfProduct = "";
+                else if(i <= 6 & !nameOfProduct.isEmpty())  {
+                    variable = nameOfProduct;
+                    nameOfProduct = "";
                 }
-                else if(i <= 7 & Amount != 0)  {
+                else if(i <= 7 & Amount >= 0)  {
                     try {
-                        preparedStatement.setInt(i, Amount);
+                        preparedStatement.setDouble(i, Amount);
                     }
                     catch (Exception e){
                         break;
@@ -525,8 +505,54 @@ public class Table {
 
 
     }
+    public static void showAllProducts(String groupName) {
+        String query = "SELECT * FROM " + DBWorkspace.tableName + " WHERE ProductGroup = \"" + groupName + "\";";
+
+        try {
+            Statement statement = Database.connection.createStatement();
+            System.out.println("All products in " + groupName + " group:");
+            showProducts(statement.executeQuery(query));
+            //return statement.executeQuery(query);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
 
+    }
+
+
+
+    public static void fullPrice(){
+        String query = "SELECT Amount, Price FROM " + DBWorkspace.tableName;
+
+        try {
+            Statement statement = Database.connection.createStatement();
+            System.out.println("All amount + price:");
+            showProducts(statement.executeQuery(query));
+            double fullPriceAmount = calculateSum(statement.executeQuery(query));
+            System.out.println("Full price is " + fullPriceAmount);
+            //return statement.executeQuery(query);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void fullPrice(String GroupName){
+        String query = "SELECT Amount, Price FROM " + DBWorkspace.tableName + " WHERE ProductGroup = \"" + GroupName + "\"";
+
+        try {
+            Statement statement = Database.connection.createStatement();
+            System.out.println("All amount + price:");
+            showProducts(statement.executeQuery(query));
+            double fullPriceAmount = calculateSum(statement.executeQuery(query));
+            System.out.println("Full price is " + fullPriceAmount);
+            //return statement.executeQuery(query);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     //delete; code - 33
     public static void deleteProduct(String title){
         String query = "DELETE FROM " + DBWorkspace.tableName + " WHERE NameOfProduct = ?";
@@ -616,7 +642,7 @@ public class Table {
 
     //update; code - 17
     public static void updateProduct(String oldNameOfProduct, String newNameOfProduct, String description, String manufacturer,
-                                     String Price, String ProductGroup) throws SQLException {
+                                     double Price, String ProductGroup) throws SQLException {
         boolean first = true;
        /* String query =
                 "UPDATE Product SET Description = ?,  Manufacturer = ?,  ProductGroup = ? WHERE NameOfProduct = ?";
@@ -624,7 +650,7 @@ public class Table {
         String query = "UPDATE " + DBWorkspace.tableName + " SET";
 
         query = fullfillingQuery(oldNameOfProduct, newNameOfProduct, description, manufacturer,
-                Price, ProductGroup, 0, query);
+                Price, ProductGroup, -1, query);
         query += " WHERE NameOfProduct = ?";
 
         System.out.println(query);
@@ -650,9 +676,14 @@ public class Table {
                         } else if (i <= 3 & !manufacturer.isEmpty()) {
                             variable = manufacturer;
                             manufacturer = "";
-                        } else if (i <= 4 & !Price.isEmpty()) {
-                            variable = Price;
-                            Price = "";
+                        } else if (i <= 4 & Price > 0) {
+                            try {
+                                preparedStatement.setDouble(i, Price);
+                                Price = -1;
+                            }
+                            catch (Exception e){
+                                break;
+                            }
                         } else if (i <= 5 & !ProductGroup.isEmpty()) {
                             variable = ProductGroup;
                             ProductGroup = "";
@@ -674,7 +705,7 @@ public class Table {
                 else
                     System.out.println("Wrong group input");
 
-                //e.printStackTrace();
+                e.printStackTrace();
                 Controller.response.setStatusCode(404);
             }
         }
@@ -684,7 +715,7 @@ public class Table {
         }
 
     }
-    private static boolean checkProductAmount(String nameOfProduct, int change){
+    private static boolean checkProductAmount(String nameOfProduct, double change){
         String query = "SELECT Amount FROM " + DBWorkspace.tableName + " WHERE NameOfProduct = \"" + nameOfProduct + "\"";
 
         try {
@@ -703,7 +734,7 @@ public class Table {
         }
         return false;
     }
-    public static void updateProductAmount(String nameOfProduct, int change){
+    public static void updateProductAmount(String nameOfProduct, double change){
 
         String query = "UPDATE " + DBWorkspace.tableName + " SET Amount = Amount + " + change + " WHERE NameOfProduct = ?";
 
