@@ -1,42 +1,44 @@
 package org.example;
 
-public class CommandAnalyzator{
+import javax.xml.crypto.Data;
 
-    public static void analyze(int commandType, String messageString) throws Exception {
-        String commandName = CommandTypeEncoder.getTypeCommand(commandType);
-        Database.connect();
-        //if("CREATE" == commandName) Table.addProduct(messageString);
-        /*else if("DELETE" == commandName) Table.deleteProduct(messageString);
-        else if("LIST_BY_CRITERIA" == commandName) Table.showProductByTitle(messageString);
-        else if ("READ" == commandName) Table.showAllProducts();*/
-        Database.close();
-    }
-
-    public static void analyze(int commandType, int messageInt) throws Exception {
-        String commandName = CommandTypeEncoder.getTypeCommand(commandType);
-        Database.connect();
-        /*if("READ" == commandName) Table.showProduct(messageInt);
-        else if("DELETE" == commandName) Table.deleteProduct(messageInt);
-        else if("LIST_BY_CRITERIA" == commandName) Table.showProductsInRange(messageInt);
-       */ Database.close();
-    }
-
-    public static void analyze(int commandType, int messageInt, String messageString) throws Exception{
-        String commandName = CommandTypeEncoder.getTypeCommand(commandType);
-        Database.connect();
-        //if("UPDATE" == commandName) Table.updateProduct(messageInt, messageString);
-        /*else if("DELETE" == commandName) Table.deleteProduct(messageInt, messageString);
-        else if("LIST_BY_CRITERIA" == commandName) Table.showProductByTitle(messageString, messageInt);*/
-        Database.close();
-    }
-
-    public static void analyze(int commandType, int messageInt1, int messageInt2) throws Exception{
-        String commandName = CommandTypeEncoder.getTypeCommand(commandType);
-        Database.connect();
-       /* if("LIST_BY_CRITERIA" == commandName) Table.showProductsInRange(messageInt1, messageInt2);*/
-        Database.close();
-    }
+public class CommandAnalyzator {
 
 
+    public static void analyze(Message message) {
+
+            takeACommand(message);
 
     }
+
+    private static void takeACommand(Message message) {
+        try {
+            Database.connect();
+            int command = message.cType;
+            String messageString = message.message;
+            String commandName = CommandTypeEncoder.getTypeCommand(command);
+            if (commandName.equals("CREATE")) {
+                if(command == 5) MessageDecryptor.decryptAddProduct(messageString);
+                else if(command  == 6) MessageDecryptor.decryptAddGroup(messageString);
+            }
+
+
+
+            if (commandName.equals("READ")){
+                if(command == 9) MessageDecryptor.decryptShowProduct(messageString);
+                else if(command  == 10) MessageDecryptor.decryptShowAllProducts(messageString);
+            }
+            if (commandName.equals("UPDATE")){
+                if(command == 17) MessageDecryptor.decryptUpdateProduct(messageString);
+                if(command == 18) MessageDecryptor.decryptUpdateGroup(messageString);
+            }
+            if (commandName.equals("DELETE")) System.out.println("It's DELETE");
+            if (commandName.equals("LIST_BY_CRITERIA")) System.out.println("It's LIST_BY_CRITERIA");
+            Database.close();
+        } catch (Exception e) {
+
+        }
+
+
+    }
+}

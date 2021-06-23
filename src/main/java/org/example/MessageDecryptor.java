@@ -1,13 +1,127 @@
 package org.example;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 
 public class MessageDecryptor {
+    private static String[] stringArray;
+    private static byte[] messageInput;
+    private static int i = 0;
+    private static int number = 0;
+    private static String checkString = "";
 
-    private static boolean checkForComma(byte[] message){
+    public static void decryptAddProduct(String messageString) {
+        i = 0;
+        number = 0;
+        checkString = "";
+
+        decryptingString(messageString, 5);
+        Table.addProduct(stringArray[0], stringArray[1], stringArray[2],
+                Double.parseDouble(stringArray[3]), stringArray[4]);
+
+    }
+    public static void decryptAddGroup(String messageString){
+        i = 0;
+        number = 0;
+        checkString = "";
+        decryptingString(messageString, 2);
+        Table.addGroup(stringArray[0], stringArray[1]);
+    }
+
+    public static void decryptShowProduct(String messageString){
+        i = 0;
+        number = 0;
+        checkString = "";
+        decryptingString(messageString,6);
+
+        Table.showProduct(stringArray[0], stringArray[1], stringArray[2],
+                Double.parseDouble(stringArray[3]), stringArray[4], Double.parseDouble(stringArray[5]));
+    }
+    public static void decryptShowAllProducts(String messageString){
+        i = 0;
+        number = 0;
+        checkString = "";
+        decryptingString(messageString,1);
+        if(stringArray[0] == null)
+            Table.showAllProducts();
+        else {
+
+            Table.showAllProducts(stringArray[0]);
+        }
+    }
+
+    public static void decryptUpdateProduct(String messageString){
+        i = 0;
+        number = 0;
+        checkString = "";
+        decryptingString(messageString,6);
+
+        Table.updateProduct(stringArray[0],stringArray[1],stringArray[2], stringArray[3],
+                Double.parseDouble(stringArray[4]), stringArray[5]);
+
+    }
+
+    public static void decryptUpdateGroup(String messageString){
+        i = 0;
+        number = 0;
+        checkString = "";
+        decryptingString(messageString,3);
+
+        Table.updateGroup(stringArray[0],stringArray[1],stringArray[2]);
+    }
+
+
+    private static String[] decryptingString(String messageString, int amountOfElements){
+        stringArray = new String[amountOfElements];
+        messageInput = messageString.getBytes(StandardCharsets.UTF_8);
+        while(i!=messageInput.length)
+        {
+
+            if((char)messageInput[i]!=',') {
+                if((char)messageInput[i] != '"')
+                    checkString += (char) messageInput[i];
+            }
+            else if ((char)messageInput[i] != '"'){
+                stringArray[number] = checkString;
+                checkString = "";
+                number++;
+            }
+            if(i == messageInput.length - 1) stringArray[number] = checkString;
+            i++;
+        }
+        for(int n = 0; n < amountOfElements; n++)
+        {
+            System.out.println("output here: " + stringArray[n]);
+        }
+        return stringArray;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*private static boolean checkForComma(byte[] message){
         for(int i = 0; i < message.length; i++)
             if((char)message[i] == ',') return true;
         return false;
@@ -89,5 +203,5 @@ public class MessageDecryptor {
             messageChar[i] = (char) message[i];
 
         return messageChar;
-    }
+    }*/
     }

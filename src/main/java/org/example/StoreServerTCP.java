@@ -61,21 +61,51 @@ public class StoreServerTCP{
             OutputStream out = clientSocket.getOutputStream();
             InputStream in = clientSocket.getInputStream();
 
-            byte[] maxPacketBuffer = new byte[Packet.maxLength];
+            byte[] maxPacketBuffer = new byte[Message.maxLength];
 
                 while (!clientSocket.isClosed()) {
-                    Process process = new Process();
+                    System.out.println(maxPacketBuffer.length + " EGASNDad");
 
                     byte[] check = maxPacketBuffer.clone();
                     in.read(maxPacketBuffer);
 
                     if (!Arrays.toString(check).equals(Arrays.toString(maxPacketBuffer))) {
-                        //System.out.println("Received(at server): " + Arrays.toString(maxPacketBuffer));
 
-                        /*byte[] sending = Process.process(maxPacketBuffer);*/
-                        //System.out.println("Sent from server: " + Arrays.toString(sending));
+
+                        System.out.println("Length of the received package: " + maxPacketBuffer.length);
                         Message message = new Message(maxPacketBuffer);
-                        //message.decode(message.secretKey);
+                        System.out.println("Server received a packet: " + Arrays.toString(maxPacketBuffer));
+                        //-------------------------------------------
+                        CommandAnalyzator.analyze(message);
+                        //-------------------------------------------
+                        /*String[] stringArray = new String[5];
+                        byte[] messageInput = message.message.getBytes(StandardCharsets.UTF_8);
+                        int i = 0;
+                        int number = 0;
+                        String checkString = "";
+                        while(i!=messageInput.length)
+                        {
+
+                            if((char)messageInput[i]!=',' && (char)messageInput[i] != '"') checkString += (char)messageInput[i];
+                            else if ((char)messageInput[i] != '"'){
+                                stringArray[number] = checkString;
+                                checkString = "";
+                                number++;
+                            }
+                            if(i == messageInput.length - 1) stringArray[number] = checkString;
+                            i++;
+                        }
+                        for(int n = 0; n < 5; n++)
+                        {
+                            System.out.println(stringArray[n]);
+                        }*/
+
+                        /*Database.connect();
+                        Table.addProduct(stringArray[0], stringArray[1], stringArray[2],
+                                Integer.parseInt(stringArray[3]), stringArray[4]);
+                        Database.close();*/
+                        
+                        //-------------------------------------------
                         System.out.println(message);
 
                         out.write(message.messagePackaging());

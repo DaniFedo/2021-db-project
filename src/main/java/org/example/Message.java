@@ -16,7 +16,8 @@ public class Message
         int cType;
         String message;
         public SecretKey secretKey;
-        int messageLen;
+        public static int messageLen;
+        public static int maxLength = Integer.BYTES * 3 + 120;
 
         public Message(){}
 
@@ -26,13 +27,22 @@ public class Message
             keyMaking();
             messageLen = message.length();
             System.out.println("messageLen is " + messageLen);
-        }
+        }private void keyMaking() throws Exception
+{
+    KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+
+    SecureRandom secureRandom = new SecureRandom();
+
+    short keyBitSize = 256;
+    keyGenerator.init(keyBitSize, secureRandom);
+
+    secretKey = keyGenerator.generateKey();
+}
         public Message(byte[] messageEncoded)
         {
             try {
                 ByteBuffer byteBuffer = ByteBuffer.wrap(messageEncoded);
                 cType = byteBuffer.getInt();
-
                 messageLen = byteBuffer.getInt();
                 int keyEncodedLength = byteBuffer.getInt();
                 byte[] keyEncoded = new byte[keyEncodedLength];
@@ -47,23 +57,14 @@ public class Message
             catch(Exception e) {}
 
         }
-    private void keyMaking() throws Exception
-    {
-        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-
-        SecureRandom secureRandom = new SecureRandom();
-
-        short keyBitSize = 256;
-        keyGenerator.init(keyBitSize, secureRandom);
-
-        secretKey = keyGenerator.generateKey();
-    }
 
         public byte[] messagePackaging(){
             try {
                 encode(secretKey);
+                messageLen = message.length();
                 byte[] keyEncoded = secretKey.getEncoded();
-                return ByteBuffer.allocate(messageLength() + keyEncoded.length)
+                int fullLength = messageLength() + keyEncoded.length;
+                return ByteBuffer.allocate(fullLength)
                         .putInt(cType)
                         .putInt(messageLen)
                         .putInt(keyEncoded.length)
@@ -86,14 +87,14 @@ public class Message
 
         public int messageLength()
         {
-            return Integer.BYTES * 3 + 50;
+            return Integer.BYTES * 3 + messageLen;
         }
 
         public void encode(SecretKey secretKey) throws Exception
         {
             Cipher cipher = new Cipher();
             message = cipher.encode(message, secretKey);
-            messageLen = message.length();
+            messageLen = message.length() + 12;
         }
 
         public void decode(SecretKey secretKey) throws Exception

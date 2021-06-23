@@ -1,17 +1,20 @@
+/*
 package org.example;
 
 import java.time.LocalTime;
 import java.util.concurrent.BlockingQueue;
 
 public class Processor{
-    /*private final BlockingQueue<Packet> decryptedPacketBlockingQueue;
+    */
+/*private final BlockingQueue<Packet> decryptedPacketBlockingQueue;
     private final BlockingQueue<Packet> answeredPacketBlockingQueue;
 
     public Processor(BlockingQueue<Packet> packetBlockingQueue, BlockingQueue<Packet> answeredPacketBlockingQueue) {
         this.decryptedPacketBlockingQueue = packetBlockingQueue;
         this.answeredPacketBlockingQueue = answeredPacketBlockingQueue;
         this.start();
-    }*/
+    }*//*
+
     public static Packet operate(Packet inputPacket) throws Exception {
 
         MessageDecryptor.decryptMessage(inputPacket.message);
@@ -22,7 +25,8 @@ public class Processor{
         return inputPacket;
     }
 
-    /*@Override
+    */
+/*@Override
     public void run() {
         try {
             //if(decryptedPacketBlockingQueue.isEmpty()) Thread.currentThread().interrupt();
@@ -45,5 +49,7 @@ public class Processor{
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }*/
+    }*//*
+
 }
+*/
