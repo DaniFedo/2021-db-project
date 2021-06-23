@@ -2,57 +2,41 @@ package org.example;
 
 import org.junit.Test;
 
-import javax.xml.crypto.Data;
-
 public class FinalTest {
     private static final String groupTable = "GroupProduct";
     private static final String productTable = "Product";
 
     private void DBInitialization()
     {
-        Database.connect();
 
         Table.create(productTable);
         Table.create(groupTable);
 
-        Database.close();
     }
     @Test
     public void messageEncodingAndDecodingTest() throws Exception
     {
+        Database.connect();
         DBInitialization();
 
-        Database.connect();
-        Table.addGroup("Round", "round products");
-        Table.addProduct("Watermelon", "test", "test", 1.15, "Round");
-        Table.addProduct("dasda", "test", "test", 2.5, "naksndkadl");
-        Table.addGroup("newRound", "newDesc");
-        Table.addProduct("Melon", "test", "test", 3.5, "newRound");
-        Table.updateProduct("Watermelon", "", "", "", 5.5, "Round");
+        Table.addGroup("testGroup", "testGroupDesc");
 
-        Table.updateProductAmount("Watermelon", 10);
-        Table.updateProductAmount("Melon", -21);
-        Table.updateProductAmount("Melon", 10);
-        ;
-        //Table.showAllProducts("Round");
-        //Table.updateProductAmount("Melon", -5);
-        Table.fullPrice();
-        Table.fullPrice("Round");
-        Table.fullPrice("newRound");
-        //Table.showProduct("Watermelon", "", "", "", "", -1);
-        /*Table.updateProductAmount("Watermelon", 10);
-        Table.updateProductAmount("Watermelon", -7);
-*/
+        Table.addGroup("testGroup1", "testGroupDesc");
+        //Table.addGroup("testGroup1", "");*/
+        Table.addProduct("test", null, null, 3.5, "testGroup");
+        Table.addProduct("test1", null, null, 2.5, "testGroup1");
+        Table.addProduct("test2", null, null, 10, "testGroup");
+        Table.updateProduct("test1", "newTest", "", "", 13, "");
+        Table.updateProduct("test2", "", "", "", 15, "");
+
+        Table.updateGroup("testGroup", "newTestGroup", "");
+
+        Table.showProduct("", "", "", 0, "", -1);
+        Table.updateProduct("test", "newTestName", "newNest", "newWork"
+        ,1000, "testGroup1");
+        Table.showAllProducts();
 
 
-        /*Table.addProduct("Watermelon2", "test", "test", "test", "Round");
-        Table.updateGroup("Round", "NewName", "newDescr");*/
-        //Table.deleteGroup("Round");
-        /*Table.updateProduct("Watermelon", "anotherNewName", "",
-                "", "", "");
-        Table.showProduct("Watermelon", "test",
-                "test", "test", "Round", 9);*/
-        //Table.deleteProduct("Watermelon");
         Database.close();
 
 

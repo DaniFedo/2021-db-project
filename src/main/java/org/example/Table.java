@@ -1,32 +1,51 @@
 package org.example;
 
-import org.sqlite.SQLiteException;
-import org.sqlite.core.DB;
-import partFive.MyHttpServer;
-import partFive.controllers.Controller;
-
-import javax.management.Query;
-import javax.xml.transform.Result;
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class Table {
+    private static void showProductsForPrice(ResultSet resultSet) {
 
-
-    private static void showProducts(ResultSet resultSet) {
         //ResultSet resultSet = selectAllProducts();
 
         //System.out.println(resultSet.next());
         try {
+            if(resultSet.next() == false){
+                System.out.println("Query result is empty");
+            }
             while (resultSet.next()) {
                 System.out.println(/*resultSet.getString("NameOfProduct") + "\t" + resultSet.getString("Description")
                         + "\t" + resultSet.getString("Manufacturer") + "\t" + */
 
                         resultSet.getDouble("Amount")
-                        + "\t" + resultSet.getDouble("Price")
+                                + "\t" + resultSet.getDouble("Price")
 
                                 /*
                                 + "\t" + resultSet.getString("ProductGroup")*/);
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void showProducts(ResultSet resultSet) {
+        boolean empty = true;
+        try {
+            while (resultSet.next()) {
+                System.out.println(resultSet.getString("NameOfProduct") + "\t" + resultSet.getString("Description")
+                        + "\t" + resultSet.getString("Manufacturer") + "\t" +
+
+                        resultSet.getDouble("Amount")
+                        + "\t" + resultSet.getDouble("Price")
+
+
+                                + "\t" + resultSet.getString("ProductGroup"));
+
+                empty = false;
+            }
+            if(empty) System.out.println("Query result is empty");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -42,50 +61,6 @@ public class Table {
             e.printStackTrace();
         }
         return result;
-    }
-
-    private static void showProducts(ResultSet resultSet, int limit) {
-        int counter = 0;
-        try {
-            while (resultSet.next() && counter < limit ) {
-                System.out.println(resultSet.getInt("id") + "\t" + resultSet.getString("title"));
-                counter++;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static ResultSet selectProductsByTitle(String title) {
-        String query = "SELECT * FROM " + DBWorkspace.tableName + " WHERE title = ?";
-
-        try {
-            PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
-
-            preparedStatement.setString(1, title);
-
-            return preparedStatement.executeQuery();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static int maxID()
-    {
-        String query = "SELECT MAX(id) FROM " + DBWorkspace.tableName;
-
-        try {
-            Statement statement = Database.connection.createStatement();
-            //showProducts(statement.executeQuery(query));
-            //return statement.executeQuery(query);
-            return statement.executeQuery(query).getInt(1);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
     }
 
     //create table
@@ -116,78 +91,6 @@ public class Table {
 
     }
 
-    public static String lookForUniqToken(int id, String password){
-        String query = "SELECT * FROM " + MyHttpServer.TableName +
-                " WHERE id = ? AND password = ?";
-
-        try {
-            PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
-
-            preparedStatement.setInt(1, id);
-            preparedStatement.setString(2, password);
-            ResultSet answer = preparedStatement.executeQuery();
-
-            return answer.getString("token");
-
-        } catch (SQLException e) {
-        }
-        return null;
-    }
-
-    public static boolean checkUniqToken(String token){
-        String query = "SELECT * FROM " + MyHttpServer.TableName +
-                " WHERE token = ?";
-
-        try {
-            PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
-
-            preparedStatement.setString(1, token);
-            ResultSet answer = preparedStatement.executeQuery();
-
-            if(answer.next() == true) return true;
-            return false;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-    public static int getIdByToken(String token){
-        String query = "SELECT id FROM " + MyHttpServer.TableName +
-                " WHERE token = ?";
-
-        try {
-            PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
-
-            preparedStatement.setString(1, token);
-            ResultSet answer = preparedStatement.executeQuery();
-
-           
-            return answer.getInt("id");
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 1;
-    }
-    public static boolean checkWhetherAlive(int id){
-        String query = "SELECT * FROM " + DBWorkspace.tableName +
-                " WHERE id = ?";
-
-        try {
-            PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
-
-            preparedStatement.setInt(1, id);
-            ResultSet answer = preparedStatement.executeQuery();
-
-            return answer.next();
-
-        } catch (SQLException e) {
-            return false;
-        }
-
-    }
-
     private static ResultSet getAllGroups(){
         String query = "SELECT NameOfGroup FROM " + DBWorkspace.productTableName;
 
@@ -203,21 +106,6 @@ public class Table {
         }
         return null;
     }
-    public static void addCustomer(String password, String token){
-        String query = "INSERT INTO " + MyHttpServer.TableName + " (password, token) VALUES(?, ?)";
-
-        try {
-            PreparedStatement preparedStatement = Database.connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-
-            preparedStatement.setString(1, password);
-            preparedStatement.setString(2, token);
-
-            preparedStatement.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
     //create product; code - 5
     public static String addProduct(String title, String description, String manufacturer,
                                     double Price, String ProductGroup) throws SQLException {
@@ -231,8 +119,7 @@ public class Table {
             if (checkingSet.getString("NameOfGroup").equals(ProductGroup)) check = true;
         }
 
-        //System.out.println(check);
-        if(check) {
+        if(check && Price > 0) {
             try {
                 PreparedStatement preparedStatement = Database.connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
@@ -251,7 +138,10 @@ public class Table {
         }
         else
         {
-            System.out.println("You've entered a product group which does not exist");
+            if(Price <= 0)
+                System.out.println("Price must be higher than 0");
+            else
+                System.out.println("You've entered a product group which does not exist");
         }
             return null;
 
@@ -275,33 +165,45 @@ public class Table {
         }
         return null;
     }
-    public static void deleteGroup(String title){
+    public static void deleteGroup(String title) throws SQLException {
         String query = "DELETE FROM " + DBWorkspace.productTableName + " WHERE NameOfGroup = ?";
 
-        try
-        {
-            PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
-
-            preparedStatement.setString(1, title);
-
-            preparedStatement.executeUpdate();
-
-            deleteProductByGroup(title);
-
-            System.out.println("Deleted group with title = \"" + title + "\"");
-        } catch (SQLException e) {
-            e.printStackTrace();
+        boolean check = true;
+        if(!title.equals("")) {
+            check = false;
+            ResultSet checkingSet = getAllGroups();
+            while (checkingSet.next()) {
+                if (checkingSet.getString("NameOfGroup").equals(title)) check = true;
+            }
         }
+        if(check) {
+            try {
+                PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
+
+                preparedStatement.setString(1, title);
+
+                preparedStatement.executeUpdate();
+
+                deleteProductByGroup(title);
+
+                System.out.println("Deleted group with title = \"" + title + "\"");
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        else
+            System.out.println("There is no such group");
     }
     public static void updateGroup(String oldTitle, String newTitle, String newDescription){
         String query = "UPDATE " + DBWorkspace.productTableName + " SET ";
         query = fullfillingQuery(oldTitle, newTitle, newDescription, "", -1, "", -1, query);
+        query += " WHERE NameOfGroup = ?";
         System.out.println("query is " + query);
 
         try {
             PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
 
-
+            String check = oldTitle;
             for(int i = 1; i < 4; i++) {
                 String variable = "";
                 if(i == 1 & !newTitle.isEmpty())  variable = newTitle;
@@ -310,7 +212,7 @@ public class Table {
                     variable = newDescription;
                     newDescription = "";
                 }
-                else if(i <= 2 & !oldTitle.isEmpty())
+                else if(i <= 3 & !oldTitle.isEmpty())
                 {
                     variable = oldTitle;
                     oldTitle = "";
@@ -322,10 +224,9 @@ public class Table {
 
             preparedStatement.executeUpdate();
 
-            updateProductByGroup(oldTitle, newTitle);
+            updateProductByGroup(check, newTitle);
 
         } catch (SQLException e) {
-            Controller.response.setStatusCode(404);
             System.out.println("Group with such name already exists");
         }
     }
@@ -337,9 +238,10 @@ public class Table {
     private static String fullfillingQuery(String oldNameOfProduct, String newNameOfProduct, String description, String manufacturer,
                                     double Price, String ProductGroup, double Amount, String query)
     {
+        boolean emptyOldName = oldNameOfProduct.isEmpty();
         boolean first = true;
-        if(!oldNameOfProduct.isEmpty()) {
-            if (query.contains("WHERE")) {
+        if(!emptyOldName || query.contains("SELECT")) {
+            if (query.contains("WHERE") && !emptyOldName) {
                 query += " NameOfProduct = ?";
                 first = false;
             }
@@ -351,6 +253,7 @@ public class Table {
                 first = false;
             }
 
+
             if (!description.isEmpty()) {
                 if (!first)
                 {
@@ -358,7 +261,8 @@ public class Table {
                     else if (query.contains("WHERE")) query += " AND ";
 
                 }
-                query += " Description = ?";
+                if(description.equals("null")) query+= " Description IS NULL";
+                else  query += " Description = ?";
                 first = false;
             }
             if (!manufacturer.isEmpty()) {
@@ -368,7 +272,8 @@ public class Table {
                     else if (query.contains("WHERE")) query += " AND ";
 
                 }
-                query += " Manufacturer = ?";
+                if(manufacturer.equals("null")) query+= " Manufacturer IS NULL";
+                else  query += " Manufacturer = ?";
                 first = false;
             }
 
@@ -418,74 +323,68 @@ public class Table {
 
         //String query = "SELECT * FROM " + DBWorkspace.tableName + " WHERE id = ?";
         String query = "SELECT * FROM " + DBWorkspace.tableName + " WHERE ";
+        String checkQuery = query;
 
 
         query = fullfillingQuery(nameOfProduct, "", description, manufacturer,
                 Price, ProductGroup, Amount, query);
 
-        try {
-            PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
-            for(int i = 1; i < 7; i++) {
-                String variable = "";
-                if(i == 1 & !nameOfProduct.isEmpty())  {
-                    variable = nameOfProduct;
-                    nameOfProduct = "";
-                }
-                else if(i <= 2 & !description.isEmpty())
-                {
-                    variable = description;
-                    description = "";
-                }
-                else if(i <= 3 & !manufacturer.isEmpty())
-                {
-                    variable = manufacturer;
-                    manufacturer = "";
-                }
-                else if(i <= 4 & Price > 0)  {
-                    try {
-                        preparedStatement.setDouble(i, Price);
+        if(query.equals(checkQuery)) showAllProducts();
+
+        else {
+            try {
+                PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
+                for (int i = 1; i < 7; i++) {
+                    String variable = "";
+                    if (i == 1 & !nameOfProduct.isEmpty()) {
+                        variable = nameOfProduct;
+                        nameOfProduct = "";
+                    } else if (i <= 2 & !description.isEmpty() & !description.equals("null")) {
+                        variable = description;
+                        description = "";
+                    } else if (i <= 3 & !manufacturer.isEmpty() & !manufacturer.equals("null")) {
+                        variable = manufacturer;
+                        manufacturer = "";
+                    } else if (i <= 4 & Price > 0) {
+                        try {
+                            preparedStatement.setDouble(i, Price);
+                            Price = 0;
+                        } catch (Exception e) {
+                            break;
+                        }
+                    } else if (i <= 5 & !ProductGroup.isEmpty()) {
+                        variable = ProductGroup;
+                        ProductGroup = "";
+                    } else if (i <= 6 & !nameOfProduct.isEmpty()) {
+                        variable = nameOfProduct;
+                        nameOfProduct = "";
+                    } else if (i <= 7 && Amount >= 0) {
+                        try {
+                            preparedStatement.setDouble(i, Amount);
+                            Amount = -1;
+                        } catch (Exception e) {
+                            break;
+                        }
                     }
-                    catch (Exception e){
+                    try {
+                        if (variable != "")
+                            preparedStatement.setString(i, variable);
+                    } catch (Exception e) {
                         break;
                     }
                 }
-                else if(i <= 5 & !ProductGroup.isEmpty())  {
-                    variable = ProductGroup;
-                    ProductGroup = "";
-                }
-                else if(i <= 6 & !nameOfProduct.isEmpty())  {
-                    variable = nameOfProduct;
-                    nameOfProduct = "";
-                }
-                else if(i <= 7 & Amount >= 0)  {
-                    try {
-                        preparedStatement.setDouble(i, Amount);
-                    }
-                    catch (Exception e){
-                        break;
-                    }
-                }
-                try {
-                    if(variable!="")
-                        preparedStatement.setString(i, variable);
-                }
-                catch(Exception e)
-                {
-                    break;
-                }
+
+                //System.out.println("query is " + preparedStatement);
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                //System.out.println(resultSet.next());
+                showProducts(resultSet);
+                return null;
+
+
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-
-            //System.out.println("query is " + preparedStatement);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            //System.out.println(resultSet.next());
-            showProducts(resultSet);
-            return null;
-
-
-
-        } catch (SQLException e) {
-            Controller.response.setStatusCode(404);
         }
         return null;
     }
@@ -505,18 +404,29 @@ public class Table {
 
 
     }
-    public static void showAllProducts(String groupName) {
+    public static void showAllProducts(String groupName) throws SQLException {
         String query = "SELECT * FROM " + DBWorkspace.tableName + " WHERE ProductGroup = \"" + groupName + "\";";
-
-        try {
-            Statement statement = Database.connection.createStatement();
-            System.out.println("All products in " + groupName + " group:");
-            showProducts(statement.executeQuery(query));
-            //return statement.executeQuery(query);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        boolean check = true;
+        if (!groupName.equals("")) {
+            check = false;
+            ResultSet checkingSet = getAllGroups();
+            while (checkingSet.next()) {
+                if (checkingSet.getString("NameOfGroup").equals(groupName)) check = true;
+            }
         }
+        if(check) {
+            try {
+                Statement statement = Database.connection.createStatement();
+                System.out.println("All products in " + groupName + " group:");
+                showProducts(statement.executeQuery(query));
+                //return statement.executeQuery(query);
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        else
+            System.out.println("You've entered wrong group name");
 
 
     }
@@ -529,7 +439,7 @@ public class Table {
         try {
             Statement statement = Database.connection.createStatement();
             System.out.println("All amount + price:");
-            showProducts(statement.executeQuery(query));
+            showProductsForPrice(statement.executeQuery(query));
             double fullPriceAmount = calculateSum(statement.executeQuery(query));
             System.out.println("Full price is " + fullPriceAmount);
             //return statement.executeQuery(query);
@@ -538,20 +448,31 @@ public class Table {
             e.printStackTrace();
         }
     }
-    public static void fullPrice(String GroupName){
+    public static void fullPrice(String GroupName) throws SQLException {
         String query = "SELECT Amount, Price FROM " + DBWorkspace.tableName + " WHERE ProductGroup = \"" + GroupName + "\"";
-
-        try {
-            Statement statement = Database.connection.createStatement();
-            System.out.println("All amount + price:");
-            showProducts(statement.executeQuery(query));
-            double fullPriceAmount = calculateSum(statement.executeQuery(query));
-            System.out.println("Full price is " + fullPriceAmount);
-            //return statement.executeQuery(query);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        boolean check = true;
+        if (!GroupName.equals("")) {
+            check = false;
+            ResultSet checkingSet = getAllGroups();
+            while (checkingSet.next()) {
+                if (checkingSet.getString("NameOfGroup").equals(GroupName)) check = true;
+            }
         }
+        if(check) {
+            try {
+                Statement statement = Database.connection.createStatement();
+                System.out.println("All amount + price:");
+                showProductsForPrice(statement.executeQuery(query));
+                double fullPriceAmount = calculateSum(statement.executeQuery(query));
+                System.out.println("Full price is " + fullPriceAmount);
+                //return statement.executeQuery(query);
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        else
+            System.out.println("You've entered wrong group name");
     }
     //delete; code - 33
     public static void deleteProduct(String title){
@@ -602,44 +523,6 @@ public class Table {
         }
     }
 
-    public static void deleteProduct(int id){
-        String query = "DELETE FROM " + DBWorkspace.tableName + " WHERE id = ?";
-
-        try
-        {
-            PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
-
-            preparedStatement.setInt(1, id);
-
-            preparedStatement.executeUpdate();
-
-            System.out.println("Deleted product with id = " + id);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void deleteProduct(int id, String title){
-        String query = "DELETE FROM " + DBWorkspace.tableName + " WHERE id = ? AND title = ?";
-
-        try
-        {
-            PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
-
-            preparedStatement.setInt(1, id);
-            preparedStatement.setString(2, title);
-
-            preparedStatement.executeUpdate();
-
-            System.out.println("Deleted product with title = \"" + title + "\" and id = " + id);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-
     //update; code - 17
     public static void updateProduct(String oldNameOfProduct, String newNameOfProduct, String description, String manufacturer,
                                      double Price, String ProductGroup) throws SQLException {
@@ -647,72 +530,72 @@ public class Table {
        /* String query =
                 "UPDATE Product SET Description = ?,  Manufacturer = ?,  ProductGroup = ? WHERE NameOfProduct = ?";
         */
-        String query = "UPDATE " + DBWorkspace.tableName + " SET";
+        if(Price >= 0) {
+            String query = "UPDATE " + DBWorkspace.tableName + " SET";
 
-        query = fullfillingQuery(oldNameOfProduct, newNameOfProduct, description, manufacturer,
-                Price, ProductGroup, -1, query);
-        query += " WHERE NameOfProduct = ?";
+            query = fullfillingQuery(oldNameOfProduct, newNameOfProduct, description, manufacturer,
+                    Price, ProductGroup, -1, query);
+            query += " WHERE NameOfProduct = ?";
 
-        System.out.println(query);
+            System.out.println(query);
 
-        boolean check = true;
-        if(!ProductGroup.equals("")) {
-            check = false;
-            ResultSet checkingSet = getAllGroups();
-            while (checkingSet.next()) {
-                if (checkingSet.getString("NameOfGroup").equals(ProductGroup)) check = true;
+            boolean check = true;
+            if (!ProductGroup.equals("")) {
+                check = false;
+                ResultSet checkingSet = getAllGroups();
+                while (checkingSet.next()) {
+                    if (checkingSet.getString("NameOfGroup").equals(ProductGroup)) check = true;
+                }
             }
-        }
-        if(check) {
-            try {
-                try (PreparedStatement preparedStatement = Database.connection.prepareStatement(query)) {
+            if (check) {
+                try {
+                    try (PreparedStatement preparedStatement = Database.connection.prepareStatement(query)) {
 
-                    for (int i = 1; i < 6; i++) {
-                        String variable = "";
-                        if (i == 1 & !newNameOfProduct.isEmpty()) variable = newNameOfProduct;
-                        else if (i <= 2 & !description.isEmpty()) {
-                            variable = description;
-                            description = "";
-                        } else if (i <= 3 & !manufacturer.isEmpty()) {
-                            variable = manufacturer;
-                            manufacturer = "";
-                        } else if (i <= 4 & Price > 0) {
-                            try {
-                                preparedStatement.setDouble(i, Price);
-                                Price = -1;
+                        for (int i = 1; i < 7; i++) {
+                            String variable = "";
+                            if (i == 1 & !newNameOfProduct.isEmpty()) variable = newNameOfProduct;
+                            else if (i <= 2 & !description.isEmpty()) {
+                                variable = description;
+                                description = "";
+                            } else if (i <= 3 & !manufacturer.isEmpty() & !manufacturer.equals("null")) {
+                                variable = manufacturer;
+                                manufacturer = "";
+                            } else if (i <= 4 & Price > 0) {
+                                try {
+                                    preparedStatement.setDouble(i, Price);
+                                    Price = 0;
+                                } catch (Exception e) {
+                                    break;
+                                }
+                            } else if (i <= 5 & !ProductGroup.isEmpty()) {
+                                variable = ProductGroup;
+                                ProductGroup = "";
+                            } else if (i <= 6 & !oldNameOfProduct.isEmpty()) {
+                                variable = oldNameOfProduct;
+                                oldNameOfProduct = "";
                             }
-                            catch (Exception e){
-                                break;
-                            }
-                        } else if (i <= 5 & !ProductGroup.isEmpty()) {
-                            variable = ProductGroup;
-                            ProductGroup = "";
-                        } else if (i <= 6 & !oldNameOfProduct.isEmpty()) {
-                            variable = oldNameOfProduct;
-                            oldNameOfProduct = "";
+                            if (!variable.isEmpty())
+                                preparedStatement.setString(i, variable);
                         }
-                        if (!variable.isEmpty())
-                            preparedStatement.setString(i, variable);
+
+                        preparedStatement.executeUpdate();
                     }
 
-                    preparedStatement.executeUpdate();
+                    //System.out.println("Updated product with id = " + id + " on new title = \"" + title + "\"");*//*
+                } catch (SQLException e) {
+                    if (e.getMessage().contains("PRIMARYKEY"))
+                        System.out.println("Wrong name, duplicates");
+                    else
+                        System.out.println("Wrong group input");
+
+
                 }
-
-                //System.out.println("Updated product with id = " + id + " on new title = \"" + title + "\"");*//*
-            } catch (SQLException e) {
-                if (e.getMessage().contains("PRIMARYKEY"))
-                    System.out.println("Wrong name, duplicates");
-                else
-                    System.out.println("Wrong group input");
-
-                e.printStackTrace();
-                Controller.response.setStatusCode(404);
+            } else {
+                System.out.println("You've entered the wrong productGroup.");
             }
         }
         else
-        {
-            System.out.println("You've entered the wrong productGroup.");
-        }
+            System.out.println("You should enter price higher than 0");
 
     }
     private static boolean checkProductAmount(String nameOfProduct, double change){
@@ -720,11 +603,11 @@ public class Table {
 
         try {
             Statement statement = Database.connection.createStatement();
-            if(statement.executeQuery(query).getInt("Amount") + change < 0)
-            {
-                return false;
+            if(statement.executeQuery(query).next()) {
+                if (statement.executeQuery(query).getInt("Amount") + change < 0) {
+                    return false;
+                } else return true;
             }
-            else return true;
 
 
             //System.out.println("Updated product with id = " + id + " on new title = \"" + title + "\"");*//*
@@ -755,7 +638,6 @@ public class Table {
                 System.out.println("Wrong group input");
 
                 e.printStackTrace();
-                Controller.response.setStatusCode(404);
             }
         }
         else System.out.println("You can't proceed this operation. Amount can't be less than 0.");
