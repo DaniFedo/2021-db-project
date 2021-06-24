@@ -27,25 +27,25 @@ public class MessageDecryptor {
         Table.addGroup(stringArray[0], stringArray[1]);
     }
 
-    public static void decryptShowProduct(String messageString){
+    public static String[] decryptShowProduct(String messageString){
         i = 0;
         number = 0;
         checkString = "";
         decryptingString(messageString,6);
 
-        Table.showProduct(stringArray[0], stringArray[1], stringArray[2],
+        return Table.showProduct(stringArray[0], stringArray[1], stringArray[2],
                 Double.parseDouble(stringArray[3]), stringArray[4], Double.parseDouble(stringArray[5]));
     }
-    public static void decryptShowAllProducts(String messageString){
+    public static String[] decryptShowAllProducts(String messageString){
         i = 0;
         number = 0;
         checkString = "";
         decryptingString(messageString,1);
         if(stringArray[0] == null)
-            Table.showAllProducts();
+            return Table.showAllProducts();
         else {
 
-            Table.showAllProducts(stringArray[0]);
+            return Table.showAllProducts(stringArray[0]);
         }
     }
 
@@ -100,7 +100,7 @@ public class MessageDecryptor {
 
 
 
-    private static String[] decryptingString(String messageString, int amountOfElements){
+    public static String[] decryptingString(String messageString, int amountOfElements){
         stringArray = new String[amountOfElements];
         messageInput = messageString.getBytes(StandardCharsets.UTF_8);
         while(i!=messageInput.length)
@@ -125,7 +125,34 @@ public class MessageDecryptor {
         return stringArray;
     }
 
+    public static String[] decryptingForClient(String messageString, int amountOfElements){
+        number = 0;
 
+        checkString = "";
+        stringArray = new String[amountOfElements];
+        messageInput = messageString.getBytes(StandardCharsets.UTF_8);
+        while(number != amountOfElements)
+        {
+            if((char)messageInput[StoreClientTCP.amount] == '.')
+                if(number == amountOfElements - 1) {
+                    stringArray[number] = checkString;
+                    checkString = "";
+                    number++;
+                }
+            if((char)messageInput[StoreClientTCP.amount]!=',') {
+                if((char)messageInput[StoreClientTCP.amount] != '"')
+                    checkString += (char) messageInput[StoreClientTCP.amount];
+            }
+            else if ((char)messageInput[StoreClientTCP.amount] != '"'){
+                stringArray[number] = checkString;
+                checkString = "";
+                number++;
+            }
+            if(StoreClientTCP.amount == messageInput.length - 1) stringArray[number] = checkString;
+            StoreClientTCP.amount++;
+        }
+        return stringArray;
+    }
 
 
 

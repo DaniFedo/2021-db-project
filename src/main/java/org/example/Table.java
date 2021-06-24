@@ -1,5 +1,8 @@
 package org.example;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -39,33 +42,36 @@ public class Table {
                                     double Price, String ProductGroup) {
         try {
 
-            String query = "INSERT INTO " + DBWorkspace.tableName + " (NameOfProduct, Description, Manufacturer" +
-                    ", Price, ProductGroup, Amount) VALUES(?, ?, ?, ?, ?, 0.0)";
+            if(title!="") {
+                String query = "INSERT INTO " + DBWorkspace.tableName + " (NameOfProduct, Description, Manufacturer" +
+                        ", Price, ProductGroup, Amount) VALUES(?, ?, ?, ?, ?, 0.0)";
 
-            boolean check = false;
-            ResultSet checkingSet = getAllGroups();
-            while (checkingSet.next()) {
-                if (checkingSet.getString("NameOfGroup").equals(ProductGroup)) check = true;
+                boolean check = false;
+                ResultSet checkingSet = getAllGroups();
+                while (checkingSet.next()) {
+                    if (checkingSet.getString("NameOfGroup").equals(ProductGroup)) check = true;
+                }
+
+                if (check && Price > 0) {
+                    PreparedStatement preparedStatement = Database.connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+
+                    preparedStatement.setString(1, title);
+                    preparedStatement.setString(2, description);
+                    preparedStatement.setString(3, manufacturer);
+                    preparedStatement.setDouble(4, Price);
+                    preparedStatement.setString(5, ProductGroup);
+
+                    preparedStatement.executeUpdate();
+                    return "Added new element: " + title;
+
+                } else {
+                    if (Price <= 0)
+                        System.out.println("Price must be higher than 0");
+                    else
+                        System.out.println("You've entered a product group which does not exist");
+                }
             }
-
-            if (check && Price > 0) {
-                PreparedStatement preparedStatement = Database.connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-
-                preparedStatement.setString(1, title);
-                preparedStatement.setString(2, description);
-                preparedStatement.setString(3, manufacturer);
-                preparedStatement.setDouble(4, Price);
-                preparedStatement.setString(5, ProductGroup);
-
-                preparedStatement.executeUpdate();
-                return "Added new element: " + title;
-
-            } else {
-                if (Price <= 0)
-                    System.out.println("Price must be higher than 0");
-                else
-                    System.out.println("You've entered a product group which does not exist");
-            }
+            else System.out.println("Enter a title");
         }
         catch(Exception e)
         {
@@ -98,7 +104,7 @@ public class Table {
 
 
     //command - 9
-    public static ResultSet showProduct(String nameOfProduct, String description, String manufacturer,
+    public static String[] showProduct(String nameOfProduct, String description, String manufacturer,
                                         double Price, String ProductGroup, double Amount){
 
         String query = "SELECT * FROM " + DBWorkspace.tableName + " WHERE ";
@@ -155,8 +161,7 @@ public class Table {
 
                 ResultSet resultSet = preparedStatement.executeQuery();
 
-                showProducts(resultSet);
-                return null;
+                return showProductsString(resultSet);
 
 
             } catch (SQLException e) {
@@ -167,22 +172,23 @@ public class Table {
     }
 
     //command - 10
-    public static void showAllProducts() {
+    public static String[] showAllProducts() {
         String query = "SELECT * FROM " + DBWorkspace.tableName;
 
         try {
             Statement statement = Database.connection.createStatement();
             System.out.println("All products:");
-            showProducts(statement.executeQuery(query));
+            return showProductsString(statement.executeQuery(query));
             //return statement.executeQuery(query);
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
+        return null;
 
     }
-    public static void showAllProducts(String groupName) {
+    public static String[] showAllProducts(String groupName) {
         try {
             String query = "SELECT * FROM " + DBWorkspace.tableName + " WHERE ProductGroup = \"" + groupName + "\";";
             boolean check = true;
@@ -196,7 +202,7 @@ public class Table {
             if (check) {
                 Statement statement = Database.connection.createStatement();
                 System.out.println("All products in " + groupName + " group:");
-                showProducts(statement.executeQuery(query));
+                return showProductsString(statement.executeQuery(query));
 
 
             } else
@@ -204,8 +210,11 @@ public class Table {
 
         }
         catch(Exception e){ e.printStackTrace();}
+        return null;
 
     }
+
+    //updateProductSubmitButton
 
 
 
@@ -317,7 +326,7 @@ public class Table {
         }
     }
 
-
+//newGroupTitleLabel
 
 
     //command - 33
@@ -601,12 +610,61 @@ public class Table {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }private static String[] showProductsString(ResultSet resultSet) {
+        boolean empty = true;
+
+        String[] output = new String[10];
+        ObservableList<Model> outputData = FXCollections.observableArrayList();
+        try {
+            int counter = 0;
+            while (resultSet.next()) {
+                String forOutput = resultSet.getString("NameOfProduct") + "," + resultSet.getString("Description")
+                        + "," +  resultSet.getString("Manufacturer") + "," +
+                        resultSet.getDouble("Amount")
+                         + "," + resultSet.getDouble("Price")
+                        + "," + resultSet.getString("ProductGroup") + ".";
+                /*Model model = new Model(resultSet.getString("NameOfProduct"), resultSet.getString("Description"),
+                        resultSet.getString("Manufacturer"), resultSet.getDouble("Amount"),
+                        resultSet.getString("ProductGroup"), resultSet.getDouble("Price"));
+                Model.outputDataOfModels.add(model);*/
+                System.out.println("FOR OUTPUT: " + forOutput);
+                output[counter] = forOutput;
+
+                System.out.println(resultSet.getString("NameOfProduct") + "\t" + resultSet.getString("Description")
+                        + "\t" + resultSet.getString("Manufacturer") + "\t" +
+                        resultSet.getDouble("Amount")
+                        + "\t" + resultSet.getDouble("Price")
+                        + "\t" + resultSet.getString("ProductGroup"));
+
+
+                counter++;
+                empty = false;
+            }
+
+            if(empty) System.out.println("Query result is empty");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println("TABLE:");
+        for(int i = 0; i < output.length; i++)
+        {
+            if(output[i]!=null)
+                System.out.println(output[i]);
+        }
+        return output;
     }
 
     private static void showProducts(ResultSet resultSet) {
         boolean empty = true;
+
+        ObservableList<Model> outputData = FXCollections.observableArrayList();
         try {
             while (resultSet.next()) {
+                Model model = new Model(resultSet.getString("NameOfProduct"), resultSet.getString("Description"),
+                        resultSet.getString("Manufacturer"), resultSet.getDouble("Amount"),
+                        resultSet.getString("ProductGroup"), resultSet.getDouble("Price"));
+                Model.outputDataOfModels.add(model);
+
                 System.out.println(resultSet.getString("NameOfProduct") + "\t" + resultSet.getString("Description")
                         + "\t" + resultSet.getString("Manufacturer") + "\t" +
                         resultSet.getDouble("Amount")
@@ -615,6 +673,7 @@ public class Table {
 
                 empty = false;
             }
+
             if(empty) System.out.println("Query result is empty");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -657,4 +716,5 @@ public class Table {
         }
         return null;
     }
+
 }

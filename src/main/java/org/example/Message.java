@@ -21,12 +21,17 @@ public class Message
 
         public Message(){}
 
-        public Message(int cType, String message) throws Exception {
-            this.cType = cType;
-            this.message = message;
-            keyMaking();
-            messageLen = message.length();
-            System.out.println("messageLen is " + messageLen);
+        public Message(int cType, String message) {
+            try {
+                this.cType = cType;
+                this.message = message;
+                keyMaking();
+                messageLen = message.length();
+                System.out.println("messageLen is " + messageLen);
+            }
+            catch(Exception e){
+
+            }
         }private void keyMaking() throws Exception
 {
     KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");

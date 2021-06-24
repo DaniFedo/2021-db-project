@@ -8,15 +8,19 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-/**
+/**  showAllButtonClicked
  * JavaFX App
  */
 public class App extends Application {
 
-    private static Scene scene;
+    public static Scene scene;
+
+    public static StoreClientTCP client1;
 
     @Override
     public void start(Stage stage) throws IOException {
+        client1 = new StoreClientTCP();
+        client1.startConnection("localhost", 2305);
         scene = new Scene(loadFXML("interface"));
         stage.setScene(scene);
         stage.show();

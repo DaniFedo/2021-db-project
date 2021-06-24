@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public class StoreServerTCP{
@@ -77,7 +78,7 @@ public class StoreServerTCP{
                         Message message = new Message(maxPacketBuffer);
                         System.out.println("Server received a packet: " + Arrays.toString(maxPacketBuffer));
                         //-------------------------------------------
-                        CommandAnalyzator.analyze(message);
+                        //CommandAnalyzator.analyze(message);
                         //-------------------------------------------
                         /*String[] stringArray = new String[5];
                         byte[] messageInput = message.message.getBytes(StandardCharsets.UTF_8);
@@ -107,9 +108,24 @@ public class StoreServerTCP{
                         Database.close();*/
                         
                         //-------------------------------------------
-                        System.out.println(message);
+                        //System.out.println(message);
 
-                        out.write(message.messagePackaging());
+                        String kaskda = " sda";
+                        String[] result = CommandAnalyzator.analyze(message);
+                            String output = "";
+                            try {
+                                for (int i = 0; i < result.length; i++) {
+                                    if (result[i] != null)
+                                        output += result[i];
+                                }
+                                out.write(output.getBytes(StandardCharsets.UTF_8));
+                            }
+                            catch(Exception e)
+                            {
+                                out.write(null);
+                            }
+
+                        //out.write(message.messagePackaging());
 
                     } else break;
                 }
