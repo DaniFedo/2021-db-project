@@ -23,6 +23,12 @@ public class Model {
         this.productGroup = productGroup;
         this.amount = amount;
     }
+    public Model(String title, Double price, Double amount)
+    {
+        this.title = title;
+        this.price = price;
+        this.amount = amount;
+    }
 
     public Model() {
     }

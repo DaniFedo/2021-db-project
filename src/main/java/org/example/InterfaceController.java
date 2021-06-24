@@ -202,6 +202,18 @@ public class InterfaceController {
 
     @FXML
     private TableView <Model> tableViewShow1;
+    @FXML
+    private TableColumn <Model, String> titleColumn11;
+
+
+    @FXML
+    private TableColumn <Model, Double> priceColumn11;
+
+    @FXML
+    private TableColumn <Model, Double> amountColumn11;
+
+    @FXML
+    private TableView <Model> tableViewShow11;
 
     public static ObservableList<Model> outputData = FXCollections.observableArrayList();
 
@@ -259,6 +271,7 @@ public class InterfaceController {
         showProductSubmitButton.setVisible(true);
         amountTitle.setVisible(true);
         amountInput.setVisible(true);
+        showAllSubmitButton.setVisible(false);
         titleColumn.setCellValueFactory(new PropertyValueFactory<Model, String>("title"));
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<Model, String>("description"));
         manufacturerColumn.setCellValueFactory(new PropertyValueFactory<Model, String>("manufacturer"));
@@ -285,6 +298,9 @@ public class InterfaceController {
         showAllAnchor.setVisible(true);
         showAllSubmitButton.setVisible(false);
         fullPriceSubmitButton.setVisible(true);
+        titleColumn11.setCellValueFactory(new PropertyValueFactory<Model, String>("title"));
+        priceColumn11.setCellValueFactory(new PropertyValueFactory<Model, Double>("price"));
+        amountColumn11.setCellValueFactory(new PropertyValueFactory<Model, Double>("amount"));
 
     }
 
@@ -323,6 +339,7 @@ public class InterfaceController {
         newTitleInput.setVisible(false);
         newTitleLabel.setVisible(false);
         tableViewShow.setVisible(false);
+        tableViewShow11.setVisible(false);
         outputData.clear();
     }
 
@@ -381,6 +398,7 @@ public class InterfaceController {
         tableViewShow1.setItems(outputData);
         tableViewShow1.setVisible(true);
         showAllSubmitButton.setVisible(false);
+
 
         /*showAllAnchor.setVisible(false);
         buttonAnchor.setVisible(true);*/
@@ -453,8 +471,10 @@ public class InterfaceController {
         Message message = new Message(commandType, result);
         App.client1.sendPackage(message.messagePackaging());
         App.client1.receive();
-        showAllAnchor.setVisible(false);
-        buttonAnchor.setVisible(true);
+        tableViewShow11.setItems(outputData);
+        tableViewShow11.setVisible(true);
+        /*showAllAnchor.setVisible(false);
+        buttonAnchor.setVisible(true);*/
         fullPriceSubmitButton.setVisible(false);
         showAllSubmitButton.setVisible(true);
 

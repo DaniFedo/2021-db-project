@@ -109,6 +109,13 @@
                               <TableColumn fx:id="amountColumn1" prefWidth="63.33331298828125" text="Amount" />
                            </columns>
                         </TableView>
+                        <TableView fx:id="tableViewShow11" prefHeight="295.0" prefWidth="600.0" visible="false" AnchorPane.bottomAnchor="76.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <columns>
+                              <TableColumn fx:id="titleColumn11" prefWidth="170.0" text="Title" />
+                              <TableColumn fx:id="priceColumn11" minWidth="0.0" prefWidth="180.66665649414062" text="Price" />
+                              <TableColumn fx:id="amountColumn11" prefWidth="248.66668701171875" text="Amount" />
+                           </columns>
+                        </TableView>
                      </children>
                   </AnchorPane>
                </children></AnchorPane>

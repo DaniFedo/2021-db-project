@@ -106,28 +106,27 @@ public class StoreServerTCP{
                         Table.addProduct(stringArray[0], stringArray[1], stringArray[2],
                                 Integer.parseInt(stringArray[3]), stringArray[4]);
                         Database.close();*/
-                        
+
                         //-------------------------------------------
                         //System.out.println(message);
 
-                        String kaskda = " sda";
                         String[] result = CommandAnalyzator.analyze(message);
-                            String output = "";
+                        String output = "";
+
                             try {
                                 for (int i = 0; i < result.length; i++) {
                                     if (result[i] != null)
                                         output += result[i];
                                 }
                                 out.write(output.getBytes(StandardCharsets.UTF_8));
-                            }
-                            catch(Exception e)
-                            {
-                                out.write(null);
+                            } catch (Exception e) {
+                                out.write(output.getBytes(StandardCharsets.UTF_8));
                             }
 
-                        //out.write(message.messagePackaging());
+                            //out.write(message.messagePackaging());
 
-                    } else break;
+                        } else break;
+
                 }
 
             out.flush();

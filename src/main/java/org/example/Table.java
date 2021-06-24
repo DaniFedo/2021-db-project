@@ -114,7 +114,9 @@ public class Table {
         query = fullfillingQuery(nameOfProduct, "", description, manufacturer,
                 Price, ProductGroup, Amount, query);
 
-        if(query.equals(checkQuery)) showAllProducts();
+        if(query.equals(checkQuery)) {
+            return showAllProducts();
+        }
 
         else {
             try {
@@ -161,7 +163,9 @@ public class Table {
 
                 ResultSet resultSet = preparedStatement.executeQuery();
 
-                return showProductsString(resultSet);
+                String[] test = showProductsString(resultSet);
+                System.out.println("here i am testing " + test[0]);
+                return test;
 
 
             } catch (SQLException e) {
@@ -178,7 +182,9 @@ public class Table {
         try {
             Statement statement = Database.connection.createStatement();
             System.out.println("All products:");
-            return showProductsString(statement.executeQuery(query));
+            String[] test = showProductsString(statement.executeQuery(query));
+            System.out.println("here i am testing " + test[0]);
+            return test;
             //return statement.executeQuery(query);
 
         } catch (SQLException e) {
@@ -383,21 +389,23 @@ public class Table {
 
 
     //command - 65
-    public static void fullPrice(){
-        String query = "SELECT Amount, Price FROM " + DBWorkspace.tableName;
+    public static String[] fullPrice(){
+        String query = "SELECT NameOfProduct, Amount, Price FROM " + DBWorkspace.tableName;
 
         try {
             Statement statement = Database.connection.createStatement();
             System.out.println("All amount + price:");
-            showProductsForPrice(statement.executeQuery(query));
+
             double fullPriceAmount = calculateSum(statement.executeQuery(query));
             System.out.println("Full price is " + fullPriceAmount);
+            return showProductsForPriceString(statement.executeQuery(query));
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return null;
     }
-    public static void fullPrice(String GroupName) {
+    public static String[] fullPrice(String GroupName) {
         try {
             String query = "SELECT Amount, Price FROM " + DBWorkspace.tableName + " WHERE ProductGroup = \"" + GroupName + "\"";
             boolean check = true;
@@ -411,9 +419,10 @@ public class Table {
             if (check) {
                     Statement statement = Database.connection.createStatement();
                     System.out.println("All amount + price for group " + GroupName + ":");
-                    showProductsForPrice(statement.executeQuery(query));
+
                     double fullPriceAmount = calculateSum(statement.executeQuery(query));
                     System.out.println("Full price for group " + GroupName + ": " + fullPriceAmount);
+                    return showProductsForPriceString(statement.executeQuery(query));
 
 
             } else
@@ -423,6 +432,7 @@ public class Table {
         {
 
         }
+        return null;
     }
 
     //command - 66
@@ -610,11 +620,42 @@ public class Table {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    private static String[] showProductsForPriceString(ResultSet resultSet) {
+
+        String[] output = new String[10];
+        boolean empty = true;
+        try {
+            int counter = 0;
+            while (resultSet.next()) {
+                String forOutput =  resultSet.getString("NameOfProduct")
+                        + "," +resultSet.getDouble("Amount") + ","
+                         + resultSet.getDouble("Price");
+
+
+                System.out.println("FOR OUTPUT: " + forOutput);
+                output[counter] = forOutput;
+
+
+                System.out.println(resultSet.getDouble("Amount")
+                        + "\t" + resultSet.getDouble("Price"));
+
+                counter++;
+                empty = false;
+            }
+            if(empty) {
+                System.out.println("Query result is empty");
+                return null;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return output;
     }private static String[] showProductsString(ResultSet resultSet) {
         boolean empty = true;
 
         String[] output = new String[10];
-        ObservableList<Model> outputData = FXCollections.observableArrayList();
         try {
             int counter = 0;
             while (resultSet.next()) {
@@ -641,7 +682,11 @@ public class Table {
                 empty = false;
             }
 
-            if(empty) System.out.println("Query result is empty");
+            if(empty) {
+                System.out.println("Query result is empty");
+                return null;
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

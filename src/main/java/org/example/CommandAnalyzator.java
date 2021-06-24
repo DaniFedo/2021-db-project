@@ -6,6 +6,7 @@ public class CommandAnalyzator {
     public static String[] analyze(Message message) {
 
         String[] result = takeACommand(message);
+        System.out.println("RES IS " + result[0]);
         try {
             System.out.println("RES IS " + result[0]);
             System.out.println(result[2] == "");
@@ -45,7 +46,7 @@ public class CommandAnalyzator {
                 else if(command == 34) MessageDecryptor.decryptDelete(messageString, false);
             }
             else if (commandName.equals("LIST_BY_CRITERIA")){
-                if(command == 65) MessageDecryptor.decryptFullPrice(messageString);
+                if(command == 65) return MessageDecryptor.decryptFullPrice(messageString);
                 else if(command == 66) MessageDecryptor.decryptUpdatingAmoung(messageString);
             };
             Database.close();

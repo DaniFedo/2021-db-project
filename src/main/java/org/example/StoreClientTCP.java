@@ -40,14 +40,15 @@ public class StoreClientTCP {
                 System.out.println("Client with ID " + clientSocket.getLocalPort() + " received a " + Arrays.toString(maxPacketBuffer));
                 String result = "";
 
-                for(int i = 0; i <maxPacketBuffer.length; i++)
+                for(int i = 0; i < maxPacketBuffer.length; i++)
                 {
                     result+= (char)(maxPacketBuffer[i]);
                 }
                 System.out.println(result);
                 while(result.getBytes(StandardCharsets.UTF_8)[amount]!=0){
-
                     String[] test = MessageDecryptor.decryptingForClient(result, 6);
+                    for(int i = 0; i < 6; i++)
+                        System.out.print(test[i] + " ");
                     Model model = new Model(test[0], test[1], test[2], Double.parseDouble(test[4]),
                             test[5], Double.parseDouble(test[3]));
                     InterfaceController.outputData.add(model);

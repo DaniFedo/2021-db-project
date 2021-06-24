@@ -41,10 +41,12 @@ public class MessageDecryptor {
         number = 0;
         checkString = "";
         decryptingString(messageString,1);
-        if(stringArray[0] == null)
-            return Table.showAllProducts();
+        if(stringArray[0] == null) {
+            String[] test = Table.showAllProducts();
+            System.out.println("NEW TEST HERE " + test[0]);
+            return test;
+        }
         else {
-
             return Table.showAllProducts(stringArray[0]);
         }
     }
@@ -77,16 +79,16 @@ public class MessageDecryptor {
         else Table.deleteGroup(stringArray[0]);
     }
 
-    public static void decryptFullPrice(String messageString){
+    public static String[] decryptFullPrice(String messageString){
         i = 0;
         number = 0;
         checkString = "";
         decryptingString(messageString,1);
         if(stringArray[0] == null)
-            Table.fullPrice();
+            return Table.fullPrice();
         else {
 
-            Table.fullPrice(stringArray[0]);
+            return Table.fullPrice(stringArray[0]);
         }
     }
     public static void decryptUpdatingAmoung(String messageString){
@@ -134,10 +136,12 @@ public class MessageDecryptor {
         while(number != amountOfElements)
         {
             if((char)messageInput[StoreClientTCP.amount] == '.')
-                if(number == amountOfElements - 1) {
+                if(number == amountOfElements - 1 || number == amountOfElements - 4) {
                     stringArray[number] = checkString;
                     checkString = "";
                     number++;
+                    if(number == amountOfElements - 4)
+                        number = 5;
                 }
             if((char)messageInput[StoreClientTCP.amount]!=',') {
                 if((char)messageInput[StoreClientTCP.amount] != '"')
