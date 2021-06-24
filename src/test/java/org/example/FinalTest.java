@@ -14,11 +14,11 @@ public class FinalTest {
 
         Table.create(productTable);
         Table.create(groupTable);
-        Table.updateGroup("newTestGroup2", "testGroup2","");
-        Table.updateGroup("newTestGroup2", "testGroup", "");
-        /*Table.addGroup("testGroup2", "");
+        Table.addGroup("testGroup2", "");
+        Table.addGroup("testGroup1", "");
         Table.addProduct("test3","","",10,"testGroup2");
-*/
+        Table.addProduct("test2", "", "", 5, "testGroup1");
+        Table.updateProductAmount("test2", 20);
 
     }
     @Test
@@ -28,8 +28,8 @@ public class FinalTest {
         DBInitialization();
         Database.close();
 
-        Message message2 = new Message(17, "\"test\",\"newTest\",\"newDesc\",,10.0,\"newTestGroup\"");
-        Message message3 = new Message(17, "\"test3\",\"newTest3\",\"newDesc3\",\"newManuf\",10.0,\"newTestGroup2\"");
+        Message message2 = new Message(65, "\"testGroup1\"");
+        Message message3 = new Message(65, "\"testGroup2\"");
                 //"\"test3\",\"newTest3\",\"newDescription\",\"newManuf\",5.0,\"newTestGroup2\"");
 
 

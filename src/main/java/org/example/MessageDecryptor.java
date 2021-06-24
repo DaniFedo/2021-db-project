@@ -63,7 +63,6 @@ public class MessageDecryptor {
                 Double.parseDouble(stringArray[4]), stringArray[5]);
 
     }
-
     public static void decryptUpdateGroup(String messageString){
         i = 0;
         number = 0;
@@ -72,6 +71,37 @@ public class MessageDecryptor {
 
         Table.updateGroup(stringArray[0],stringArray[1],stringArray[2]);
     }
+
+    public static void decryptDelete(String messageString, boolean Product){
+        i = 0;
+        number = 0;
+        checkString = "";
+        decryptingString(messageString,1);
+        if(Product) Table.deleteProduct(stringArray[0]);
+        else Table.deleteGroup(stringArray[0]);
+    }
+
+    public static void decryptFullPrice(String messageString){
+        i = 0;
+        number = 0;
+        checkString = "";
+        decryptingString(messageString,1);
+        if(stringArray[0] == null)
+            Table.fullPrice();
+        else {
+
+            Table.fullPrice(stringArray[0]);
+        }
+    }
+    public static void decryptUpdatingAmoung(String messageString){
+        i = 0;
+        number = 0;
+        checkString = "";
+        decryptingString(messageString,2);
+
+        Table.updateProductAmount(stringArray[0],Double.parseDouble(stringArray[1]));
+    }
+
 
 
     private static String[] decryptingString(String messageString, int amountOfElements){

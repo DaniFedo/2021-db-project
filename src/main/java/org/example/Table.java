@@ -69,7 +69,7 @@ public class Table {
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            System.out.println("This name is already taken");
         }
             return null;
 
@@ -388,57 +388,75 @@ public class Table {
             e.printStackTrace();
         }
     }
-    public static void fullPrice(String GroupName) throws SQLException {
-        String query = "SELECT Amount, Price FROM " + DBWorkspace.tableName + " WHERE ProductGroup = \"" + GroupName + "\"";
-        boolean check = true;
-        if (!GroupName.equals("")) {
-            check = false;
-            ResultSet checkingSet = getAllGroups();
-            while (checkingSet.next()) {
-                if (checkingSet.getString("NameOfGroup").equals(GroupName)) check = true;
+    public static void fullPrice(String GroupName) {
+        try {
+            String query = "SELECT Amount, Price FROM " + DBWorkspace.tableName + " WHERE ProductGroup = \"" + GroupName + "\"";
+            boolean check = true;
+            if (!GroupName.equals("")) {
+                check = false;
+                ResultSet checkingSet = getAllGroups();
+                while (checkingSet.next()) {
+                    if (checkingSet.getString("NameOfGroup").equals(GroupName)) check = true;
+                }
             }
-        }
-        if(check) {
-            try {
-                Statement statement = Database.connection.createStatement();
-                System.out.println("All amount + price:");
-                showProductsForPrice(statement.executeQuery(query));
-                double fullPriceAmount = calculateSum(statement.executeQuery(query));
-                System.out.println("Full price is " + fullPriceAmount);
+            if (check) {
+                    Statement statement = Database.connection.createStatement();
+                    System.out.println("All amount + price for group " + GroupName + ":");
+                    showProductsForPrice(statement.executeQuery(query));
+                    double fullPriceAmount = calculateSum(statement.executeQuery(query));
+                    System.out.println("Full price for group " + GroupName + ": " + fullPriceAmount);
 
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+
+            } else
+                System.out.println("You've entered wrong group name");
         }
-        else
-            System.out.println("You've entered wrong group name");
+        catch(Exception e)
+        {
+
+        }
     }
 
     //command - 66
     public static void updateProductAmount(String nameOfProduct, double change){
+        try {
 
-        String query = "UPDATE " + DBWorkspace.tableName + " SET Amount = Amount + " + change + " WHERE NameOfProduct = ?";
+            String query = "UPDATE " + DBWorkspace.tableName + " SET Amount = Amount + " + change + " WHERE NameOfProduct = ?";
+
+            boolean check = true;
+            if (!nameOfProduct.equals("")) {
+                check = false;
+                ResultSet checkingSet = getAllProducts();
+                while (checkingSet.next()) {
+                    if (checkingSet.getString("NameOfProduct").equals(nameOfProduct)) check = true;
+                }
+            }
+            if (check) {
+                if (checkProductAmount(nameOfProduct, change)) {
+                    try {
+                        PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
+                        preparedStatement.setString(1, nameOfProduct);
 
 
-        if(checkProductAmount(nameOfProduct, change)) {
-            try {
-                PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
-                preparedStatement.setString(1, nameOfProduct);
+                        preparedStatement.executeUpdate();
 
 
-                preparedStatement.executeUpdate();
+                    } catch (SQLException e) {
 
 
-                 } catch (SQLException e) {
+                        System.out.println("Wrong group input");
 
+                        e.printStackTrace();
+                    }
+                } else System.out.println("You can't proceed this operation. Amount can't be less than 0.");
 
-                System.out.println("Wrong group input");
-
-                e.printStackTrace();
+            } else {
+                System.out.println("No such product");
             }
         }
-        else System.out.println("You can't proceed this operation. Amount can't be less than 0.");
+        catch (Exception e)
+        {
 
+        }
     }
 
 
@@ -572,15 +590,14 @@ public class Table {
         return query;
     }
     private static void showProductsForPrice(ResultSet resultSet) {
-
+        boolean empty = true;
         try {
-            if(resultSet.next() == false){
-                System.out.println("Query result is empty");
-            }
             while (resultSet.next()) {
                 System.out.println(resultSet.getDouble("Amount")
                         + "\t" + resultSet.getDouble("Price"));
+                empty = false;
             }
+            if(empty) System.out.println("Query result is empty");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -618,6 +635,18 @@ public class Table {
 
     private static ResultSet getAllGroups(){
         String query = "SELECT NameOfGroup FROM " + DBWorkspace.productTableName;
+
+        try {
+            Statement statement = Database.connection.createStatement();
+            return statement.executeQuery(query);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    private static ResultSet getAllProducts(){
+        String query = "SELECT NameOfProduct FROM " + DBWorkspace.tableName;
 
         try {
             Statement statement = Database.connection.createStatement();

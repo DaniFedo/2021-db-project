@@ -28,12 +28,18 @@ public class CommandAnalyzator {
                 if(command == 9) MessageDecryptor.decryptShowProduct(messageString);
                 else if(command  == 10) MessageDecryptor.decryptShowAllProducts(messageString);
             }
-            if (commandName.equals("UPDATE")){
+            else if (commandName.equals("UPDATE")){
                 if(command == 17) MessageDecryptor.decryptUpdateProduct(messageString);
-                if(command == 18) MessageDecryptor.decryptUpdateGroup(messageString);
+                else if(command == 18) MessageDecryptor.decryptUpdateGroup(messageString);
             }
-            if (commandName.equals("DELETE")) System.out.println("It's DELETE");
-            if (commandName.equals("LIST_BY_CRITERIA")) System.out.println("It's LIST_BY_CRITERIA");
+            else if (commandName.equals("DELETE")){
+                if(command == 33) MessageDecryptor.decryptDelete(messageString, true);
+                else if(command == 34) MessageDecryptor.decryptDelete(messageString, false);
+            }
+            else if (commandName.equals("LIST_BY_CRITERIA")){
+                if(command == 65) MessageDecryptor.decryptFullPrice(messageString);
+                else if(command == 66) MessageDecryptor.decryptUpdatingAmoung(messageString);
+            };
             Database.close();
         } catch (Exception e) {
 
