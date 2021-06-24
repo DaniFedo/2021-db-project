@@ -6,7 +6,6 @@ public class CommandAnalyzator {
     public static String[] analyze(Message message) {
 
         String[] result = takeACommand(message);
-        System.out.println("RES IS " + result[0]);
         try {
             System.out.println("RES IS " + result[0]);
             System.out.println(result[2] == "");

@@ -11,6 +11,7 @@ public class Model {
     private double price;
     private String productGroup;
     private double amount;
+    public static double fullPrice;
 
     public static ObservableList<Model> outputDataOfModels = FXCollections.observableArrayList();
 

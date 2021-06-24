@@ -1,12 +1,8 @@
 package org.example;
 
-import java.io.IOException;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.AmbientLight;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
@@ -298,6 +294,7 @@ public class InterfaceController {
         showAllAnchor.setVisible(true);
         showAllSubmitButton.setVisible(false);
         fullPriceSubmitButton.setVisible(true);
+        tableViewShow11.setVisible(false);
         titleColumn11.setCellValueFactory(new PropertyValueFactory<Model, String>("title"));
         priceColumn11.setCellValueFactory(new PropertyValueFactory<Model, Double>("price"));
         amountColumn11.setCellValueFactory(new PropertyValueFactory<Model, Double>("amount"));
@@ -330,6 +327,7 @@ public class InterfaceController {
 
     @FXML
     public void closeButtonClicked() {
+        outputData.clear();
         addingAnchor.setVisible(false);
         buttonAnchor.setVisible(true);
         showProductSubmitButton.setVisible(false);
@@ -339,8 +337,9 @@ public class InterfaceController {
         newTitleInput.setVisible(false);
         newTitleLabel.setVisible(false);
         tableViewShow.setVisible(false);
+        tableViewShow1.setVisible(false);
         tableViewShow11.setVisible(false);
-        outputData.clear();
+        showAllSubmitButton.setVisible(true);
     }
 
     //--------------------------showing product------------------
@@ -362,17 +361,8 @@ public class InterfaceController {
         App.client1.sendPackage(message.messagePackaging());
         App.client1.receive();
         //---------------------------------------------
-        /*Model trymodel = new Model("test", "newTest", "theNewest", 10.0,
-                "testGroup", 100.0);
-        outputData.add(trymodel);*/
 
-
-
-//        int counter = 0;
-//        while(!Model.outputDataOfModels.isEmpty()) {
-//            outputData.add(Model.outputDataOfModels.get(counter));
-//            counter++;
-//        }
+        showProductSubmitButton.setVisible(false);
         tableViewShow.setItems(outputData);
         tableViewShow.setVisible(true);
         //----------------------------------------------
@@ -418,6 +408,7 @@ public class InterfaceController {
         amountLabel.setVisible(false);
         tableViewShow.setVisible(false);
         tableViewShow1.setVisible(false);
+        tableViewShow11.setVisible(false);
         outputData.clear();
 
         showAllLabel.setText("Group name:");
@@ -464,6 +455,7 @@ public class InterfaceController {
     //------------------------full price-------------------------
     @FXML
     public void fullPriceSubmitButtonClicked() {
+        Model.fullPrice = 0;
         commandType = 65;
         String groupName = showAllGroupName.getText();
 
@@ -471,12 +463,21 @@ public class InterfaceController {
         Message message = new Message(commandType, result);
         App.client1.sendPackage(message.messagePackaging());
         App.client1.receive();
+        for(int i = 0; i < outputData.size(); i++)
+        {
+            Model forTry = outputData.get(i);
+            Model.fullPrice += outputData.get(i).getPrice() * outputData.get(i).getAmount();
+            System.out.println(forTry.getAmount());
+
+
+        }
+        Model model = new Model("Overall:", 0.0, Model.fullPrice);
+        outputData.add(model);
         tableViewShow11.setItems(outputData);
         tableViewShow11.setVisible(true);
         /*showAllAnchor.setVisible(false);
         buttonAnchor.setVisible(true);*/
         fullPriceSubmitButton.setVisible(false);
-        showAllSubmitButton.setVisible(true);
 
     }
 

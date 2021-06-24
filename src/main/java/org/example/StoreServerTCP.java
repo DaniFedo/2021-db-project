@@ -71,47 +71,21 @@ public class StoreServerTCP{
                     byte[] check = maxPacketBuffer.clone();
                     in.read(maxPacketBuffer);
 
+                    System.out.println("RECEIVED: " + Arrays.toString(maxPacketBuffer));
+
                     if (!Arrays.toString(check).equals(Arrays.toString(maxPacketBuffer))) {
 
 
                         System.out.println("Length of the received package: " + maxPacketBuffer.length);
                         Message message = new Message(maxPacketBuffer);
                         System.out.println("Server received a packet: " + Arrays.toString(maxPacketBuffer));
-                        //-------------------------------------------
-                        //CommandAnalyzator.analyze(message);
-                        //-------------------------------------------
-                        /*String[] stringArray = new String[5];
-                        byte[] messageInput = message.message.getBytes(StandardCharsets.UTF_8);
-                        int i = 0;
-                        int number = 0;
-                        String checkString = "";
-                        while(i!=messageInput.length)
-                        {
 
-                            if((char)messageInput[i]!=',' && (char)messageInput[i] != '"') checkString += (char)messageInput[i];
-                            else if ((char)messageInput[i] != '"'){
-                                stringArray[number] = checkString;
-                                checkString = "";
-                                number++;
-                            }
-                            if(i == messageInput.length - 1) stringArray[number] = checkString;
-                            i++;
-                        }
-                        for(int n = 0; n < 5; n++)
-                        {
-                            System.out.println(stringArray[n]);
-                        }*/
-
-                        /*Database.connect();
-                        Table.addProduct(stringArray[0], stringArray[1], stringArray[2],
-                                Integer.parseInt(stringArray[3]), stringArray[4]);
-                        Database.close();*/
-
-                        //-------------------------------------------
-                        //System.out.println(message);
 
                         String[] result = CommandAnalyzator.analyze(message);
-                        String output = "";
+                        if(result == null) out.write("1".getBytes(StandardCharsets.UTF_8));
+
+                        else {
+                            String output = "";
 
                             try {
                                 for (int i = 0; i < result.length; i++) {
@@ -120,8 +94,10 @@ public class StoreServerTCP{
                                 }
                                 out.write(output.getBytes(StandardCharsets.UTF_8));
                             } catch (Exception e) {
+                                e.printStackTrace();
                                 out.write(output.getBytes(StandardCharsets.UTF_8));
                             }
+                        }
 
                             //out.write(message.messagePackaging());
 

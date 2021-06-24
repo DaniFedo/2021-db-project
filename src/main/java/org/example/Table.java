@@ -397,6 +397,7 @@ public class Table {
             System.out.println("All amount + price:");
 
             double fullPriceAmount = calculateSum(statement.executeQuery(query));
+            Model.fullPrice = fullPriceAmount;
             System.out.println("Full price is " + fullPriceAmount);
             return showProductsForPriceString(statement.executeQuery(query));
 
@@ -407,7 +408,7 @@ public class Table {
     }
     public static String[] fullPrice(String GroupName) {
         try {
-            String query = "SELECT Amount, Price FROM " + DBWorkspace.tableName + " WHERE ProductGroup = \"" + GroupName + "\"";
+            String query = "SELECT NameOfProduct, Amount, Price FROM " + DBWorkspace.tableName + " WHERE ProductGroup = \"" + GroupName + "\"";
             boolean check = true;
             if (!GroupName.equals("")) {
                 check = false;
@@ -628,7 +629,7 @@ public class Table {
         try {
             int counter = 0;
             while (resultSet.next()) {
-                String forOutput =  resultSet.getString("NameOfProduct")
+                String forOutput =  "." + resultSet.getString("NameOfProduct")
                         + "," +resultSet.getDouble("Amount") + ","
                          + resultSet.getDouble("Price");
 
