@@ -164,7 +164,6 @@ public class Table {
                 ResultSet resultSet = preparedStatement.executeQuery();
 
                 String[] test = showProductsString(resultSet);
-                System.out.println("here i am testing " + test[0]);
                 return test;
 
 
@@ -183,7 +182,7 @@ public class Table {
             Statement statement = Database.connection.createStatement();
             System.out.println("All products:");
             String[] test = showProductsString(statement.executeQuery(query));
-            System.out.println("here i am testing " + test[0]);
+            //System.out.println("here i am testing " + test[0]);
             return test;
             //return statement.executeQuery(query);
 
@@ -220,7 +219,6 @@ public class Table {
 
     }
 
-    //updateProductSubmitButton
 
 
 
@@ -236,7 +234,7 @@ public class Table {
                         Price, ProductGroup, -1, query);
                 query += " WHERE NameOfProduct = ?";
 
-                System.out.println(query);
+                //System.out.println(query);
 
                 boolean check = true;
                 if (!ProductGroup.equals("")) {
@@ -293,13 +291,12 @@ public class Table {
                 System.out.println("Wrong group input");
         }
     }
-
     //command - 18
     public static void updateGroup(String oldTitle, String newTitle, String newDescription){
         String query = "UPDATE " + DBWorkspace.productTableName + " SET ";
         query = fullfillingQuery(oldTitle, newTitle, newDescription, "", -1, "", -1, query);
         query += " WHERE NameOfGroup = ?";
-        System.out.println("query is " + query);
+       // System.out.println("query is " + query);
 
         try {
             PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
@@ -332,7 +329,6 @@ public class Table {
         }
     }
 
-//newGroupTitleLabel
 
 
     //command - 33
@@ -600,8 +596,8 @@ public class Table {
 
             if (first)
                 System.out.println("No input");
-            else
-                System.out.println(query);
+
+                //System.out.println(query);
         }
         else
         {
@@ -634,12 +630,12 @@ public class Table {
                          + resultSet.getDouble("Price");
 
 
-                System.out.println("FOR OUTPUT: " + forOutput);
+               // System.out.println("FOR OUTPUT: " + forOutput);
                 output[counter] = forOutput;
 
 
-                System.out.println(resultSet.getDouble("Amount")
-                        + "\t" + resultSet.getDouble("Price"));
+                /*System.out.println(resultSet.getDouble("Amount")
+                        + "\t" + resultSet.getDouble("Price"));*/
 
                 counter++;
                 empty = false;
@@ -669,14 +665,14 @@ public class Table {
                         resultSet.getString("Manufacturer"), resultSet.getDouble("Amount"),
                         resultSet.getString("ProductGroup"), resultSet.getDouble("Price"));
                 Model.outputDataOfModels.add(model);*/
-                System.out.println("FOR OUTPUT: " + forOutput);
+                //System.out.println("FOR OUTPUT: " + forOutput);
                 output[counter] = forOutput;
 
-                System.out.println(resultSet.getString("NameOfProduct") + "\t" + resultSet.getString("Description")
+              /*  System.out.println(resultSet.getString("NameOfProduct") + "\t" + resultSet.getString("Description")
                         + "\t" + resultSet.getString("Manufacturer") + "\t" +
                         resultSet.getDouble("Amount")
                         + "\t" + resultSet.getDouble("Price")
-                        + "\t" + resultSet.getString("ProductGroup"));
+                        + "\t" + resultSet.getString("ProductGroup"));*/
 
 
                 counter++;
@@ -691,11 +687,12 @@ public class Table {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println("TABLE:");
+        //System.out.println("TABLE:");
+
         for(int i = 0; i < output.length; i++)
         {
-            if(output[i]!=null)
-                System.out.println(output[i]);
+            //if(output[i]!=null)
+               // System.out.println(output[i]);
         }
         return output;
     }

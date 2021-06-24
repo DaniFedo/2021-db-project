@@ -27,7 +27,7 @@ public class Message
                 this.message = message;
                 keyMaking();
                 messageLen = message.length();
-                System.out.println("messageLen is " + messageLen);
+                //System.out.println("messageLen is " + messageLen);
             }
             catch(Exception e){
 

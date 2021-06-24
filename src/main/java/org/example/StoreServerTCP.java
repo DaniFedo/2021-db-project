@@ -66,7 +66,7 @@ public class StoreServerTCP{
             byte[] maxPacketBuffer = new byte[Message.maxLength];
 
                 while (!clientSocket.isClosed()) {
-                    System.out.println(maxPacketBuffer.length + " EGASNDad");
+                    //System.out.println(maxPacketBuffer.length + " EGASNDad");
 
                     byte[] check = maxPacketBuffer.clone();
                     in.read(maxPacketBuffer);

@@ -28,10 +28,15 @@ public class FinalTest {
         DBInitialization();
         Database.close();
 
-        Message message2 = new Message(65, "\"testGroup1\"");
-        Message message3 = new Message(65, "\"testGroup2\"");
-                //"\"test3\",\"newTest3\",\"newDescription\",\"newManuf\",5.0,\"newTestGroup2\"");
+        Message message2 = new Message(5, "\"test1\",\"newDescription\"," +
+                "\"newManuf\",10.0,\"testGroup2\"");
+        Message message3 = new Message(6, "\"testGroup3\",\"newDescriptionForGroup\"");
 
+        Message message7 = new Message(18, "\"testGroup2\",\"newTestGroup2\",");
+
+        Message message8 = new Message(33, "\"test3\"");
+
+        Message message9 = new Message(65, "");
 
 
 
@@ -43,7 +48,26 @@ public class FinalTest {
 
         client1.sendPackage(message3.messagePackaging());
         client1.receive();
+
+        client1.sendPackage(message7.messagePackaging());
+        client1.receive();
+
+        client1.sendPackage(message8.messagePackaging());
+        client1.receive();
+
+        client1.sendPackage(message9.messagePackaging());
+        client1.receive();
+
         client1.stopConnection();
+
+        Database.connect();
+        Table.updateProduct("test1", "totallyNewTest1",
+                "totallyNewDesc", "totallyNewManuf", 345,
+                "newTestGroup2");
+
+        Table.updateGroup("newTestGroup2", "totallyNewTestGroup2", "totallyNewGroupDesc");
+
+        Database.close();
 
 
 

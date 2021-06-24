@@ -26,7 +26,7 @@ public class StoreClientTCP {
             try {
 
                 out.write(packet);
-                System.out.println("Length of the sent package: " + packet.length);
+               // System.out.println("Length of the sent package: " + packet.length);
                 System.out.println("Client with ID " + clientSocket.getLocalPort() + " send " + Arrays.toString(packet));
 
             }
@@ -57,20 +57,19 @@ public class StoreClientTCP {
                         }
                     }
 
-                    System.out.println(result + " " + check);
+                    //System.out.println(result + " " + check);
                     while (result.getBytes(StandardCharsets.UTF_8)[amount] != 0) {
                         if (!check) {
                             String[] test = MessageDecryptor.decryptingForClient(result, 6);
-                            for (int i = 0; i < 6; i++)
-                                System.out.print(test[i] + " ");
+
+                                //System.out.print(test[i] + " ");
                             Model model = new Model(test[0], test[1], test[2], Double.parseDouble(test[4]),
                                     test[5], Double.parseDouble(test[3]));
                             InterfaceController.outputData.add(model);
                         } else {
                             String[] test = MessageDecryptor.decryptingForClient(result, 3);
-                            System.out.println(test[0] == "");
-                            for (int i = 0; i < 3; i++)
-                                System.out.print(test[i] + " ");
+                            //System.out.println(test[0] == "");
+
 
                             try {
                                 Model model = new Model(test[0], Double.parseDouble(test[1]), Double.parseDouble(test[2]));

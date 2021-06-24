@@ -7,8 +7,8 @@ public class CommandAnalyzator {
 
         String[] result = takeACommand(message);
         try {
-            System.out.println("RES IS " + result[0]);
-            System.out.println(result[2] == "");
+            /*System.out.println("RES IS " + result[0]);
+            System.out.println(result[2] == "");*/
 
             return result;
         }

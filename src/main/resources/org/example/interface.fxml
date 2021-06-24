@@ -16,18 +16,18 @@
       <content>
         <AnchorPane fx:id="productMainAnchor" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <AnchorPane fx:id="buttonAnchor" prefHeight="370.6666666666667" prefWidth="600.0">
+                  <AnchorPane fx:id="buttonAnchor" prefHeight="370.6666666666667" prefWidth="600.0" style="-fx-background-color: #A0522D">
                      <children>
-                        <Button fx:id="addingButton" layoutX="113.0" layoutY="74.0" mnemonicParsing="false" onAction="#addingButtonClicked" text="Add" />
-                        <Button fx:id="deletingButton" layoutX="107.0" layoutY="132.0" mnemonicParsing="false" onAction="#deletingButtonClicked" text="Delete" />
-                        <Button fx:id="showButton" layoutX="112.0" layoutY="211.0" mnemonicParsing="false" onAction="#showButtonClicked" text="Show" />
-                        <Button fx:id="showAllButton" layoutX="454.0" layoutY="211.0" mnemonicParsing="false" onAction="#showAllButtonClicked" text="Show All" />
-                        <Button fx:id="fullPriceButton" layoutX="453.0" layoutY="132.0" mnemonicParsing="false" onAction="#fullPriceButtonClicked" text="Full Price" />
-                        <Button fx:id="addAmountButton" layoutX="258.0" layoutY="280.0" mnemonicParsing="false" onAction="#addAmountButtonClicked" text="Add Amount" />
-                        <Button fx:id="EditingButton" layoutX="467.0" layoutY="74.0" mnemonicParsing="false" onAction="#editingButtonClicked" text="Edit" />
+                        <Button fx:id="addingButton" layoutX="100.0" layoutY="74.0" mnemonicParsing="false" onAction="#addingButtonClicked" style="-fx-background-color: #8FBC8F; -fx-pref-width:100; -fx-pref-height:25" text="Add" />
+                        <Button fx:id="deletingButton" layoutX="100.0" layoutY="132.0" mnemonicParsing="false" onAction="#deletingButtonClicked" style="-fx-background-color: #8FBC8F; -fx-pref-width:100; -fx-pref-height:25" text="Delete" textFill="#a12c2c" />
+                        <Button fx:id="showButton" layoutX="100.0" layoutY="185.0" mnemonicParsing="false" onAction="#showButtonClicked" style="-fx-background-color: #8FBC8F; -fx-pref-width:100; -fx-pref-height:25" text="Show" />
+                        <Button fx:id="showAllButton" layoutX="403.0" layoutY="185.0" mnemonicParsing="false" onAction="#showAllButtonClicked" style="-fx-background-color: #8FBC8F; -fx-pref-width:100; -fx-pref-height:25" text="Show All" />
+                        <Button fx:id="fullPriceButton" layoutX="402.0" layoutY="132.0" mnemonicParsing="false" onAction="#fullPriceButtonClicked" style="-fx-background-color: #8FBC8F; -fx-pref-width:100; -fx-pref-height:25" text="Full Price" />
+                        <Button fx:id="addAmountButton" layoutX="250.0" layoutY="279.0" mnemonicParsing="false" onAction="#addAmountButtonClicked" style="-fx-background-color: #8FBC8F; -fx-pref-width:100; -fx-pref-height:25" text="Add Amount" />
+                        <Button fx:id="EditingButton" layoutX="402.0" layoutY="74.0" mnemonicParsing="false" onAction="#editingButtonClicked" style="-fx-background-color: #8FBC8F; -fx-pref-width:100; -fx-pref-height:25" text="Edit" />
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="addingAnchor" prefHeight="370.6666666666667" prefWidth="600.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <AnchorPane fx:id="addingAnchor" prefHeight="370.6666666666667" prefWidth="600.0" style="-fx-background-color: #A0522D" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <TextField fx:id="titleInput" layoutX="60.0" layoutY="56.0" />
                         <TextField fx:id="descriptionInput" layoutX="382.0" layoutY="56.0" />
@@ -36,10 +36,10 @@
                         <TextField fx:id="productGroupInput" layoutX="382.0" layoutY="224.0" />
                         <TextField fx:id="amountInput" layoutX="60.0" layoutY="224.0" visible="false" />
                         <TextField fx:id="newTitleInput" layoutX="62.0" layoutY="115.0" visible="false" />
-                        <Button fx:id="addingSubmitButton" layoutX="108.0" layoutY="301.0" mnemonicParsing="false" onAction="#addingSubmitButtonClicked" text="Submit" />
-                        <Button fx:id="showProductSubmitButton" layoutX="109.0" layoutY="301.0" mnemonicParsing="false" onAction="#showProductSubmitButtonClicked" text="Submit" visible="false" />
-                        <Button fx:id="updateProductSubmitButton" layoutX="82.0" layoutY="301.0" mnemonicParsing="false" onAction="#updateProductSubmitButtonClicked" text="Submit" visible="false" />
-                        <Button fx:id="closeButton" layoutX="434.0" layoutY="301.0" mnemonicParsing="false" onAction="#closeButtonClicked" text="Close" />
+                        <Button fx:id="addingSubmitButton" layoutX="108.0" layoutY="301.0" mnemonicParsing="false" onAction="#addingSubmitButtonClicked" style="-fx-background-color: #8FBC8F; -fx-pref-width:100; -fx-pref-height:25" text="Submit" />
+                        <Button fx:id="showProductSubmitButton" layoutX="109.0" layoutY="301.0" mnemonicParsing="false" onAction="#showProductSubmitButtonClicked" style="-fx-background-color: #8FBC8F; -fx-pref-width:100; -fx-pref-height:25" text="Submit" visible="false" />
+                        <Button fx:id="updateProductSubmitButton" layoutX="82.0" layoutY="301.0" mnemonicParsing="false" onAction="#updateProductSubmitButtonClicked" style="-fx-background-color: #8FBC8F; -fx-pref-width:100; -fx-pref-height:25" text="Submit" visible="false" />
+                        <Button fx:id="closeButton" layoutX="434.0" layoutY="301.0" mnemonicParsing="false" onAction="#closeButtonClicked" style="-fx-background-color: #8FBC8F; -fx-pref-width:100; -fx-pref-height:25" text="Close" />
                         <Label layoutX="25.0" layoutY="59.0" text="Title:">
                            <font>
                               <Font size="14.0" />
@@ -75,7 +75,7 @@
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <TableView fx:id="tableViewShow" layoutX="2.0" layoutY="92.0" prefHeight="290.0" prefWidth="600.0" visible="false" AnchorPane.bottomAnchor="81.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TableView fx:id="tableViewShow" layoutX="2.0" layoutY="92.0" prefHeight="290.0" prefWidth="600.0" style="-fx-background-color: #CD853F" visible="false" AnchorPane.bottomAnchor="81.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <columns>
                               <TableColumn fx:id="titleColumn" prefWidth="93.99996948242188" text="Title" />
                               <TableColumn fx:id="descriptionColumn" prefWidth="141.33334350585938" text="Description" />
@@ -87,19 +87,19 @@
                         </TableView>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="showAllAnchor" prefHeight="370.6666666666667" prefWidth="600.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <AnchorPane fx:id="showAllAnchor" prefHeight="370.6666666666667" prefWidth="600.0" style="-fx-background-color: #A0522D" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <Label fx:id="showAllLabel" layoutX="133.0" layoutY="163.0" text="Group name:" />
                         <Label fx:id="deleteProductLabel" layoutX="177.0" layoutY="163.0" text="Title:" visible="false" />
                         <Label fx:id="amountLabel" layoutX="168.0" layoutY="220.0" text="Change:" visible="false" />
                         <TextField fx:id="showAllGroupName" layoutX="211.0" layoutY="159.0" />
                         <TextField fx:id="updateAmountInput" layoutX="211.0" layoutY="216.0" visible="false" />
-                        <Button fx:id="showAllSubmitButton" layoutX="123.0" layoutY="301.0" mnemonicParsing="false" onAction="#showAllSubmitButtonClicked" text="Submit" />
-                        <Button fx:id="deleteProductButton" layoutX="122.0" layoutY="299.0" mnemonicParsing="false" onAction="#deleteProductButtonClicked" text="Submit" visible="false" />
-                        <Button fx:id="fullPriceSubmitButton" layoutX="122.0" layoutY="301.0" mnemonicParsing="false" onAction="#fullPriceSubmitButtonClicked" text="Submit" visible="false" />
-                        <Button fx:id="amountSubmitButton" layoutX="123.0" layoutY="301.0" mnemonicParsing="false" onAction="#amountSubmitButtonClicked" text="Submit" visible="false" />
-                        <Button fx:id="closeButtonShowAll" layoutX="452.0" layoutY="301.0" mnemonicParsing="false" onAction="#closeButtonShowAllClicked" text="Close" />
-                        <TableView fx:id="tableViewShow1" prefHeight="290.0" prefWidth="600.0" visible="false">
+                        <Button fx:id="showAllSubmitButton" layoutX="90.0" layoutY="301.0" mnemonicParsing="false" onAction="#showAllSubmitButtonClicked" style="-fx-background-color: #8FBC8F; -fx-pref-width:100; -fx-pref-height:25" text="Submit" />
+                        <Button fx:id="deleteProductButton" layoutX="90.0" layoutY="301.0" mnemonicParsing="false" onAction="#deleteProductButtonClicked" style="-fx-background-color: #8FBC8F; -fx-pref-width:100; -fx-pref-height:25" text="Submit" visible="false" />
+                        <Button fx:id="fullPriceSubmitButton" layoutX="90.0" layoutY="301.0" mnemonicParsing="false" onAction="#fullPriceSubmitButtonClicked" style="-fx-background-color: #8FBC8F; -fx-pref-width:100; -fx-pref-height:25" text="Submit" visible="false" />
+                        <Button fx:id="amountSubmitButton" layoutX="90.0" layoutY="301.0" mnemonicParsing="false" onAction="#amountSubmitButtonClicked" style="-fx-background-color: #8FBC8F; -fx-pref-width:100; -fx-pref-height:25" text="Submit" visible="false" />
+                        <Button fx:id="closeButtonShowAll" layoutX="405.0" layoutY="301.0" mnemonicParsing="false" onAction="#closeButtonShowAllClicked" style="-fx-background-color: #8FBC8F; -fx-pref-width:100; -fx-pref-height:25" text="Close" />
+                        <TableView fx:id="tableViewShow1" prefHeight="290.0" prefWidth="600.0" style="-fx-background-color: #CD853F" visible="false">
                            <columns>
                               <TableColumn fx:id="titleColumn1" prefWidth="93.99996948242188" text="Title" />
                               <TableColumn fx:id="descriptionColumn1" prefWidth="141.33334350585938" text="Description" />
@@ -109,7 +109,7 @@
                               <TableColumn fx:id="amountColumn1" prefWidth="63.33331298828125" text="Amount" />
                            </columns>
                         </TableView>
-                        <TableView fx:id="tableViewShow11" prefHeight="295.0" prefWidth="600.0" visible="false" AnchorPane.bottomAnchor="76.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TableView fx:id="tableViewShow11" prefHeight="295.0" prefWidth="600.0" style="-fx-background-color: #CD853F" visible="false" AnchorPane.bottomAnchor="76.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <columns>
                               <TableColumn fx:id="titleColumn11" prefWidth="170.0" text="Title" />
                               <TableColumn fx:id="priceColumn11" minWidth="0.0" prefWidth="180.66665649414062" text="Price" />
@@ -123,21 +123,21 @@
     </Tab>
     <Tab text="Product Groups">
       <content>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #A0522D">
                <children>
                   <AnchorPane fx:id="buttonGroupsAnchor" prefHeight="370.6666666666667" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <Button fx:id="addingGroupButton1" layoutX="103.0" layoutY="87.0" mnemonicParsing="false" onAction="#addingGroupButtonClicked" text="Add" />
-                        <Button fx:id="updateGroupButton" layoutX="96.0" layoutY="185.0" mnemonicParsing="false" onAction="#updateGroupButtonClicked" text="Update" />
-                        <Button fx:id="deleteGroupButton" layoutX="417.0" layoutY="185.0" mnemonicParsing="false" onAction="#deleteGroupButtonClicked" text="Delete" />
+                        <Button fx:id="addingGroupButton1" layoutX="96.0" layoutY="87.0" mnemonicParsing="false" onAction="#addingGroupButtonClicked" style="-fx-background-color: #8FBC8F; -fx-pref-width:100; -fx-pref-height:25" text="Add" />
+                        <Button fx:id="updateGroupButton" layoutX="96.0" layoutY="159.0" mnemonicParsing="false" onAction="#updateGroupButtonClicked" style="-fx-background-color: #8FBC8F; -fx-pref-width:100; -fx-pref-height:25" text="Update" />
+                        <Button fx:id="deleteGroupButton" layoutX="418.0" layoutY="159.0" mnemonicParsing="false" onAction="#deleteGroupButtonClicked" style="-fx-background-color: #8FBC8F; -fx-pref-width:100; -fx-pref-height:25" text="Delete" />
                      </children>
                   </AnchorPane>
                   <AnchorPane fx:id="addingGroupAnchor" prefHeight="370.6666666666667" prefWidth="600.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <Button fx:id="addingGroupSubmitButton" layoutX="100.0" layoutY="309.0" mnemonicParsing="false" onAction="#addingGroupSubmitButtonClicked" text="Submit" />
-                        <Button fx:id="updateGroupSubmitButton" layoutX="131.0" layoutY="309.0" mnemonicParsing="false" onAction="#updateGroupSubmitButton" text="Submit" visible="false" />
-                        <Button fx:id="deleteGroupSubmitButton" layoutX="100.0" layoutY="309.0" mnemonicParsing="false" onAction="#deleteGroupSubmitButtonClicked" text="Submit" visible="false" />
-                        <Button fx:id="closeGroup" layoutX="439.0" layoutY="309.0" mnemonicParsing="false" onAction="#closeGroupButtonClicked" text="Close" />
+                        <Button fx:id="addingGroupSubmitButton" layoutX="100.0" layoutY="309.0" mnemonicParsing="false" onAction="#addingGroupSubmitButtonClicked" style="-fx-background-color: #8FBC8F; -fx-pref-width:100; -fx-pref-height:25" text="Submit" />
+                        <Button fx:id="updateGroupSubmitButton" layoutX="100.0" layoutY="309.0" mnemonicParsing="false" onAction="#updateGroupSubmitButton" style="-fx-background-color: #8FBC8F; -fx-pref-width:100; -fx-pref-height:25" text="Submit" visible="false" />
+                        <Button fx:id="deleteGroupSubmitButton" layoutX="100.0" layoutY="309.0" mnemonicParsing="false" onAction="#deleteGroupSubmitButtonClicked" style="-fx-background-color: #8FBC8F; -fx-pref-width:100; -fx-pref-height:25" text="Submit" visible="false" />
+                        <Button fx:id="closeGroup" layoutX="439.0" layoutY="309.0" mnemonicParsing="false" onAction="#closeGroupButtonClicked" style="-fx-background-color: #8FBC8F; -fx-pref-width:100; -fx-pref-height:25" text="Close" />
                         <TextField fx:id="inputGroupName" layoutX="216.0" layoutY="90.0" />
                         <TextField fx:id="inputGroupDescription" layoutX="216.0" layoutY="191.0" />
                         <TextField fx:id="inputNewGroupName" layoutX="216.0" layoutY="138.0" visible="false" />

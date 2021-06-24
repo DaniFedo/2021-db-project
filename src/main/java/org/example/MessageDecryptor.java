@@ -43,7 +43,7 @@ public class MessageDecryptor {
         decryptingString(messageString,1);
         if(stringArray[0] == null) {
             String[] test = Table.showAllProducts();
-            System.out.println("NEW TEST HERE " + test[0]);
+            //System.out.println("NEW TEST HERE " + test[0]);
             return test;
         }
         else {
@@ -123,10 +123,10 @@ public class MessageDecryptor {
             if(i == messageInput.length - 1) stringArray[number] = checkString;
             i++;
         }
-        for(int n = 0; n < amountOfElements; n++)
+        /*for(int n = 0; n < amountOfElements; n++)
         {
             System.out.println("output here: " + stringArray[n]);
-        }
+        }*/
         return stringArray;
     }
 
