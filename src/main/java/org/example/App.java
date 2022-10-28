@@ -5,11 +5,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import lombok.Data;
 
 import java.io.IOException;
 
-/**  showAllButtonClicked
+/**
+ * showAllButtonClicked
  * JavaFX App
  */
 public class App extends Application {

@@ -46,7 +46,6 @@ public class CRC {
             crc = (crc >>> 8) ^ table[(crc ^ b) & 0xff];
         }
 
-        //System.out.println("CRC16 = " + Integer.toHexString(crc));
         return crc;
 
     }

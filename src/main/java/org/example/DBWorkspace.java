@@ -8,15 +8,12 @@ import javafx.stage.Stage;
 
 public class DBWorkspace extends Application {
 
-    public final static String dbName =  "database.db";
+    public final static String dbName = "database.db";
     public static final String productTableName = "GroupProduct";
     public static final String tableName = "Product";
 
-    public static void main(String args[]) throws Exception {
-
-    launch(args);
-
-
+    public static void main(String args[]) {
+        launch(args);
     }
 
     @Override

@@ -13,16 +13,14 @@ public class Table {
     public static void create(String tableName) {
 
         String query;
-        if(tableName.equals("Product")) {
-             query = "CREATE TABLE IF NOT EXISTS Product " +
+        if (tableName.equals("Product")) {
+            query = "CREATE TABLE IF NOT EXISTS Product " +
                     " (NameOfProduct VARCHAR(45) PRIMARY KEY, Description VARCHAR(45), Manufacturer VARCHAR(45)," +
-                     " Amount double, Price double, ProductGroup VARCHAR(45), " +
-                     " FOREIGN KEY (ProductGroup) REFERENCES GroupProduct (NameOfGroup) ON DELETE CASCADE" +
-                     " ON UPDATE CASCADE);";
-        }
-
-        else {
-             query = "CREATE TABLE IF NOT EXISTS " + tableName +
+                    " Amount double, Price double, ProductGroup VARCHAR(45), " +
+                    " FOREIGN KEY (ProductGroup) REFERENCES GroupProduct (NameOfGroup) ON DELETE CASCADE" +
+                    " ON UPDATE CASCADE);";
+        } else {
+            query = "CREATE TABLE IF NOT EXISTS " + tableName +
                     " (NameOfGroup VARCHAR(45) PRIMARY KEY, Description VARCHAR(45))";
         }
         try {
@@ -42,7 +40,7 @@ public class Table {
                                     double Price, String ProductGroup) {
         try {
 
-            if(title!="") {
+            if (title != "") {
                 String query = "INSERT INTO " + DBWorkspace.tableName + " (NameOfProduct, Description, Manufacturer" +
                         ", Price, ProductGroup, Amount) VALUES(?, ?, ?, ?, ?, 0.0)";
 
@@ -70,16 +68,14 @@ public class Table {
                     else
                         System.out.println("You've entered a product group which does not exist");
                 }
-            }
-            else System.out.println("Enter a title");
-        }
-        catch(Exception e)
-        {
+            } else System.out.println("Enter a title");
+        } catch (Exception e) {
             System.out.println("This name is already taken");
         }
-            return null;
+        return null;
 
     }
+
     //command - 6
     public static String addGroup(String title, String description) {
 
@@ -101,11 +97,9 @@ public class Table {
     }
 
 
-
-
     //command - 9
     public static String[] showProduct(String nameOfProduct, String description, String manufacturer,
-                                        double Price, String ProductGroup, double Amount){
+                                       double Price, String ProductGroup, double Amount) {
 
         String query = "SELECT * FROM " + DBWorkspace.tableName + " WHERE ";
         String checkQuery = query;
@@ -114,11 +108,9 @@ public class Table {
         query = fullfillingQuery(nameOfProduct, "", description, manufacturer,
                 Price, ProductGroup, Amount, query);
 
-        if(query.equals(checkQuery)) {
+        if (query.equals(checkQuery)) {
             return showAllProducts();
-        }
-
-        else {
+        } else {
             try {
                 PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
                 for (int i = 1; i < 7; i++) {
@@ -193,6 +185,7 @@ public class Table {
         return null;
 
     }
+
     public static String[] showAllProducts(String groupName) {
         try {
             String query = "SELECT * FROM " + DBWorkspace.tableName + " WHERE ProductGroup = \"" + groupName + "\";";
@@ -213,13 +206,12 @@ public class Table {
             } else
                 System.out.println("You've entered wrong group name");
 
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        catch(Exception e){ e.printStackTrace();}
         return null;
 
     }
-
-
 
 
     //command - 17
@@ -245,37 +237,37 @@ public class Table {
                     }
                 }
                 if (check) {
-                        try (PreparedStatement preparedStatement = Database.connection.prepareStatement(query)) {
+                    try (PreparedStatement preparedStatement = Database.connection.prepareStatement(query)) {
 
-                            for (int i = 1; i < 7; i++) {
-                                String variable = "";
-                                if (i == 1 & !newNameOfProduct.isEmpty()) variable = newNameOfProduct;
-                                else if (i <= 2 & !description.isEmpty()) {
-                                    variable = description;
-                                    description = "";
-                                } else if (i <= 3 & !manufacturer.isEmpty() & !manufacturer.equals("null")) {
-                                    variable = manufacturer;
-                                    manufacturer = "";
-                                } else if (i <= 4 & Price > 0) {
-                                    try {
-                                        preparedStatement.setDouble(i, Price);
-                                        Price = 0;
-                                    } catch (Exception e) {
-                                        break;
-                                    }
-                                } else if (i <= 5 & !ProductGroup.isEmpty()) {
-                                    variable = ProductGroup;
-                                    ProductGroup = "";
-                                } else if (i <= 6 & !oldNameOfProduct.isEmpty()) {
-                                    variable = oldNameOfProduct;
-                                    oldNameOfProduct = "";
+                        for (int i = 1; i < 7; i++) {
+                            String variable = "";
+                            if (i == 1 & !newNameOfProduct.isEmpty()) variable = newNameOfProduct;
+                            else if (i <= 2 & !description.isEmpty()) {
+                                variable = description;
+                                description = "";
+                            } else if (i <= 3 & !manufacturer.isEmpty() & !manufacturer.equals("null")) {
+                                variable = manufacturer;
+                                manufacturer = "";
+                            } else if (i <= 4 & Price > 0) {
+                                try {
+                                    preparedStatement.setDouble(i, Price);
+                                    Price = 0;
+                                } catch (Exception e) {
+                                    break;
                                 }
-                                if (!variable.isEmpty())
-                                    preparedStatement.setString(i, variable);
+                            } else if (i <= 5 & !ProductGroup.isEmpty()) {
+                                variable = ProductGroup;
+                                ProductGroup = "";
+                            } else if (i <= 6 & !oldNameOfProduct.isEmpty()) {
+                                variable = oldNameOfProduct;
+                                oldNameOfProduct = "";
                             }
-
-                            preparedStatement.executeUpdate();
+                            if (!variable.isEmpty())
+                                preparedStatement.setString(i, variable);
                         }
+
+                        preparedStatement.executeUpdate();
+                    }
 
                 } else {
                     System.out.println("You've entered the wrong productGroup.");
@@ -283,40 +275,37 @@ public class Table {
             } else
                 System.out.println("You should enter price higher than 0");
 
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             if (e.getMessage().contains("PRIMARYKEY"))
                 System.out.println("Wrong name, duplicates");
             else
                 System.out.println("Wrong group input");
         }
     }
+
     //command - 18
-    public static void updateGroup(String oldTitle, String newTitle, String newDescription){
+    public static void updateGroup(String oldTitle, String newTitle, String newDescription) {
         String query = "UPDATE " + DBWorkspace.productTableName + " SET ";
         query = fullfillingQuery(oldTitle, newTitle, newDescription, "", -1, "", -1, query);
         query += " WHERE NameOfGroup = ?";
-       // System.out.println("query is " + query);
+        // System.out.println("query is " + query);
 
         try {
             PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
 
             String check = oldTitle;
-            for(int i = 1; i < 4; i++) {
+            for (int i = 1; i < 4; i++) {
                 String variable = "";
-                if(i == 1 & !newTitle.isEmpty())  variable = newTitle;
-                else if(i <= 2 & !newDescription.isEmpty())
-                {
+                if (i == 1 & !newTitle.isEmpty()) variable = newTitle;
+                else if (i <= 2 & !newDescription.isEmpty()) {
                     variable = newDescription;
                     newDescription = "";
-                }
-                else if(i <= 3 & !oldTitle.isEmpty())
-                {
+                } else if (i <= 3 & !oldTitle.isEmpty()) {
                     variable = oldTitle;
                     oldTitle = "";
                 }
 
-                if(!variable.isEmpty())
+                if (!variable.isEmpty())
                     preparedStatement.setString(i, variable);
             }
 
@@ -330,13 +319,11 @@ public class Table {
     }
 
 
-
     //command - 33
-    public static void deleteProduct(String title){
+    public static void deleteProduct(String title) {
         String query = "DELETE FROM " + DBWorkspace.tableName + " WHERE NameOfProduct = ?";
 
-        try
-        {
+        try {
             PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
 
             preparedStatement.setString(1, title);
@@ -375,17 +362,14 @@ public class Table {
 
             } else
                 System.out.println("There is no such group");
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
-
     //command - 65
-    public static String[] fullPrice(){
+    public static String[] fullPrice() {
         String query = "SELECT NameOfProduct, Amount, Price FROM " + DBWorkspace.tableName;
 
         try {
@@ -402,6 +386,7 @@ public class Table {
         }
         return null;
     }
+
     public static String[] fullPrice(String GroupName) {
         try {
             String query = "SELECT NameOfProduct, Amount, Price FROM " + DBWorkspace.tableName + " WHERE ProductGroup = \"" + GroupName + "\"";
@@ -414,26 +399,24 @@ public class Table {
                 }
             }
             if (check) {
-                    Statement statement = Database.connection.createStatement();
-                    System.out.println("All amount + price for group " + GroupName + ":");
+                Statement statement = Database.connection.createStatement();
+                System.out.println("All amount + price for group " + GroupName + ":");
 
-                    double fullPriceAmount = calculateSum(statement.executeQuery(query));
-                    System.out.println("Full price for group " + GroupName + ": " + fullPriceAmount);
-                    return showProductsForPriceString(statement.executeQuery(query));
+                double fullPriceAmount = calculateSum(statement.executeQuery(query));
+                System.out.println("Full price for group " + GroupName + ": " + fullPriceAmount);
+                return showProductsForPriceString(statement.executeQuery(query));
 
 
             } else
                 System.out.println("You've entered wrong group name");
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
 
         }
         return null;
     }
 
     //command - 66
-    public static void updateProductAmount(String nameOfProduct, double change){
+    public static void updateProductAmount(String nameOfProduct, double change) {
         try {
 
             String query = "UPDATE " + DBWorkspace.tableName + " SET Amount = Amount + " + change + " WHERE NameOfProduct = ?";
@@ -468,21 +451,19 @@ public class Table {
             } else {
                 System.out.println("No such product");
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
 
         }
     }
 
 
     //--------------------------privates--------------------------------
-    private static boolean checkProductAmount(String nameOfProduct, double change){
+    private static boolean checkProductAmount(String nameOfProduct, double change) {
         String query = "SELECT Amount FROM " + DBWorkspace.tableName + " WHERE NameOfProduct = \"" + nameOfProduct + "\"";
 
         try {
             Statement statement = Database.connection.createStatement();
-            if(statement.executeQuery(query).next()) {
+            if (statement.executeQuery(query).next()) {
                 if (statement.executeQuery(query).getInt("Amount") + change < 0) {
                     return false;
                 } else return true;
@@ -496,10 +477,9 @@ public class Table {
         return false;
     }
 
-    private static void deleteProductByGroup(String title){
+    private static void deleteProductByGroup(String title) {
         String query = "DELETE FROM " + DBWorkspace.tableName + " WHERE ProductGroup = ?";
-        try
-        {
+        try {
             PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
 
             preparedStatement.setString(1, title);
@@ -511,10 +491,10 @@ public class Table {
             e.printStackTrace();
         }
     }
-    private static void updateProductByGroup(String oldTitle, String newTitle){
+
+    private static void updateProductByGroup(String oldTitle, String newTitle) {
         String query = "UPDATE " + DBWorkspace.tableName + " SET ProductGroup = ? WHERE ProductGroup = ?";
-        try
-        {
+        try {
             PreparedStatement preparedStatement = Database.connection.prepareStatement(query);
 
             preparedStatement.setString(1, newTitle);
@@ -525,19 +505,19 @@ public class Table {
             e.printStackTrace();
         }
     }
+
     private static String fullfillingQuery(String oldNameOfProduct, String newNameOfProduct, String description, String manufacturer,
-                                           double Price, String ProductGroup, double Amount, String query)
-    {
+                                           double Price, String ProductGroup, double Amount, String query) {
         boolean emptyOldName = oldNameOfProduct.isEmpty();
         boolean first = true;
-        if(!emptyOldName || query.contains("SELECT")) {
+        if (!emptyOldName || query.contains("SELECT")) {
             if (query.contains("WHERE") && !emptyOldName) {
                 query += " NameOfProduct = ?";
                 first = false;
             }
             if (!newNameOfProduct.isEmpty()) {
-                if(query.contains(DBWorkspace.productTableName))
-                    query+= " NameOfGroup = ?";
+                if (query.contains(DBWorkspace.productTableName))
+                    query += " NameOfGroup = ?";
                 else
                     query += " NameOfProduct = ?";
                 first = false;
@@ -545,31 +525,28 @@ public class Table {
 
 
             if (!description.isEmpty()) {
-                if (!first)
-                {
+                if (!first) {
                     if (query.contains("SET")) query += ", ";
                     else if (query.contains("WHERE")) query += " AND ";
 
                 }
-                if(description.equals("null")) query+= " Description IS NULL";
-                else  query += " Description = ?";
+                if (description.equals("null")) query += " Description IS NULL";
+                else query += " Description = ?";
                 first = false;
             }
             if (!manufacturer.isEmpty()) {
-                if (!first)
-                {
+                if (!first) {
                     if (query.contains("SET")) query += ", ";
                     else if (query.contains("WHERE")) query += " AND ";
 
                 }
-                if(manufacturer.equals("null")) query+= " Manufacturer IS NULL";
-                else  query += " Manufacturer = ?";
+                if (manufacturer.equals("null")) query += " Manufacturer IS NULL";
+                else query += " Manufacturer = ?";
                 first = false;
             }
 
             if (Price > 0) {
-                if (!first)
-                {
+                if (!first) {
                     if (query.contains("SET")) query += ", ";
                     else if (query.contains("WHERE")) query += " AND ";
 
@@ -579,8 +556,7 @@ public class Table {
             }
 
             if (!ProductGroup.isEmpty()) {
-                if (!first)
-                {
+                if (!first) {
                     if (query.contains("SET")) query += ", ";
                     else if (query.contains("WHERE")) query += " AND ";
 
@@ -597,27 +573,13 @@ public class Table {
             if (first)
                 System.out.println("No input");
 
-                //System.out.println(query);
-        }
-        else
-        {
+            //System.out.println(query);
+        } else {
             System.out.println("Enter old title of the product");
         }
         return query;
     }
-    private static void showProductsForPrice(ResultSet resultSet) {
-        boolean empty = true;
-        try {
-            while (resultSet.next()) {
-                System.out.println(resultSet.getDouble("Amount")
-                        + "\t" + resultSet.getDouble("Price"));
-                empty = false;
-            }
-            if(empty) System.out.println("Query result is empty");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+
     private static String[] showProductsForPriceString(ResultSet resultSet) {
 
         String[] output = new String[10];
@@ -625,12 +587,12 @@ public class Table {
         try {
             int counter = 0;
             while (resultSet.next()) {
-                String forOutput =  "." + resultSet.getString("NameOfProduct")
-                        + "," +resultSet.getDouble("Amount") + ","
-                         + resultSet.getDouble("Price");
+                String forOutput = "." + resultSet.getString("NameOfProduct")
+                        + "," + resultSet.getDouble("Amount") + ","
+                        + resultSet.getDouble("Price");
 
 
-               // System.out.println("FOR OUTPUT: " + forOutput);
+                // System.out.println("FOR OUTPUT: " + forOutput);
                 output[counter] = forOutput;
 
 
@@ -640,7 +602,7 @@ public class Table {
                 counter++;
                 empty = false;
             }
-            if(empty) {
+            if (empty) {
                 System.out.println("Query result is empty");
                 return null;
             }
@@ -649,7 +611,9 @@ public class Table {
             e.printStackTrace();
         }
         return output;
-    }private static String[] showProductsString(ResultSet resultSet) {
+    }
+
+    private static String[] showProductsString(ResultSet resultSet) {
         boolean empty = true;
 
         String[] output = new String[10];
@@ -657,9 +621,9 @@ public class Table {
             int counter = 0;
             while (resultSet.next()) {
                 String forOutput = resultSet.getString("NameOfProduct") + "," + resultSet.getString("Description")
-                        + "," +  resultSet.getString("Manufacturer") + "," +
+                        + "," + resultSet.getString("Manufacturer") + "," +
                         resultSet.getDouble("Amount")
-                         + "," + resultSet.getDouble("Price")
+                        + "," + resultSet.getDouble("Price")
                         + "," + resultSet.getString("ProductGroup") + ".";
                 /*Model model = new Model(resultSet.getString("NameOfProduct"), resultSet.getString("Description"),
                         resultSet.getString("Manufacturer"), resultSet.getDouble("Amount"),
@@ -679,7 +643,7 @@ public class Table {
                 empty = false;
             }
 
-            if(empty) {
+            if (empty) {
                 System.out.println("Query result is empty");
                 return null;
             }
@@ -689,39 +653,13 @@ public class Table {
         }
         //System.out.println("TABLE:");
 
-        for(int i = 0; i < output.length; i++)
-        {
+        for (int i = 0; i < output.length; i++) {
             //if(output[i]!=null)
-               // System.out.println(output[i]);
+            // System.out.println(output[i]);
         }
         return output;
     }
 
-    private static void showProducts(ResultSet resultSet) {
-        boolean empty = true;
-
-        ObservableList<Model> outputData = FXCollections.observableArrayList();
-        try {
-            while (resultSet.next()) {
-                Model model = new Model(resultSet.getString("NameOfProduct"), resultSet.getString("Description"),
-                        resultSet.getString("Manufacturer"), resultSet.getDouble("Amount"),
-                        resultSet.getString("ProductGroup"), resultSet.getDouble("Price"));
-                Model.outputDataOfModels.add(model);
-
-                System.out.println(resultSet.getString("NameOfProduct") + "\t" + resultSet.getString("Description")
-                        + "\t" + resultSet.getString("Manufacturer") + "\t" +
-                        resultSet.getDouble("Amount")
-                        + "\t" + resultSet.getDouble("Price")
-                        + "\t" + resultSet.getString("ProductGroup"));
-
-                empty = false;
-            }
-
-            if(empty) System.out.println("Query result is empty");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
     private static double calculateSum(ResultSet resultSet) {
         double result = 0;
         try {
@@ -735,7 +673,7 @@ public class Table {
         return result;
     }
 
-    private static ResultSet getAllGroups(){
+    private static ResultSet getAllGroups() {
         String query = "SELECT NameOfGroup FROM " + DBWorkspace.productTableName;
 
         try {
@@ -747,7 +685,8 @@ public class Table {
         }
         return null;
     }
-    private static ResultSet getAllProducts(){
+
+    private static ResultSet getAllProducts() {
         String query = "SELECT NameOfProduct FROM " + DBWorkspace.tableName;
 
         try {

@@ -47,20 +47,6 @@ public class InterfaceController {
     private Button amountSubmitButton;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     //---------------------------text fields--------------------------
     @FXML
     private TextField titleInput;
@@ -99,19 +85,6 @@ public class InterfaceController {
     private TextField updateAmountInput;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     //----------------------------anchors----------------------
     @FXML
     private AnchorPane productMainAnchor;
@@ -130,7 +103,6 @@ public class InterfaceController {
 
     @FXML
     private AnchorPane showAllAnchor;
-
 
 
     //---------------------------other------------------------
@@ -158,72 +130,60 @@ public class InterfaceController {
     private Label amountLabel;
 
     @FXML
-    private TableColumn <Model, String> titleColumn;
+    private TableColumn<Model, String> titleColumn;
 
     @FXML
-    private TableColumn <Model, String> descriptionColumn;
+    private TableColumn<Model, String> descriptionColumn;
 
     @FXML
-    private TableColumn <Model, String> manufacturerColumn;
+    private TableColumn<Model, String> manufacturerColumn;
 
     @FXML
-    private TableColumn <Model, Double> priceColumn;
+    private TableColumn<Model, Double> priceColumn;
 
     @FXML
-    private TableColumn <Model, String> groupColumn;
+    private TableColumn<Model, String> groupColumn;
 
     @FXML
-    private TableColumn <Model, Double> amountColumn;
+    private TableColumn<Model, Double> amountColumn;
 
     @FXML
-    private TableView <Model> tableViewShow;
+    private TableView<Model> tableViewShow;
 
     @FXML
-    private TableColumn <Model, String> titleColumn1;
+    private TableColumn<Model, String> titleColumn1;
 
     @FXML
-    private TableColumn <Model, String> descriptionColumn1;
+    private TableColumn<Model, String> descriptionColumn1;
 
     @FXML
-    private TableColumn <Model, String> manufacturerColumn1;
+    private TableColumn<Model, String> manufacturerColumn1;
 
     @FXML
-    private TableColumn <Model, Double> priceColumn1;
+    private TableColumn<Model, Double> priceColumn1;
 
     @FXML
-    private TableColumn <Model, String> groupColumn1;
+    private TableColumn<Model, String> groupColumn1;
 
     @FXML
-    private TableColumn <Model, Double> amountColumn1;
+    private TableColumn<Model, Double> amountColumn1;
 
     @FXML
-    private TableView <Model> tableViewShow1;
+    private TableView<Model> tableViewShow1;
     @FXML
-    private TableColumn <Model, String> titleColumn11;
+    private TableColumn<Model, String> titleColumn11;
 
 
     @FXML
-    private TableColumn <Model, Double> priceColumn11;
+    private TableColumn<Model, Double> priceColumn11;
 
     @FXML
-    private TableColumn <Model, Double> amountColumn11;
+    private TableColumn<Model, Double> amountColumn11;
 
     @FXML
-    private TableView <Model> tableViewShow11;
+    private TableView<Model> tableViewShow11;
 
     public static ObservableList<Model> outputData = FXCollections.observableArrayList();
-
-
-
-    //tableViewShow
-
-
-
-
-
-
-
-
 
     //--------------------------functions-----------------------
 
@@ -259,6 +219,7 @@ public class InterfaceController {
         deleteProductLabel.setVisible(true);
         showAllLabel.setVisible(false);
     }
+
     @FXML
     public void showButtonClicked() {
         buttonAnchor.setVisible(false);
@@ -268,24 +229,24 @@ public class InterfaceController {
         amountTitle.setVisible(true);
         amountInput.setVisible(true);
         showAllSubmitButton.setVisible(false);
-        titleColumn.setCellValueFactory(new PropertyValueFactory<Model, String>("title"));
-        descriptionColumn.setCellValueFactory(new PropertyValueFactory<Model, String>("description"));
-        manufacturerColumn.setCellValueFactory(new PropertyValueFactory<Model, String>("manufacturer"));
-        priceColumn.setCellValueFactory(new PropertyValueFactory<Model, Double>("price"));
-        groupColumn.setCellValueFactory(new PropertyValueFactory<Model, String>("productGroup"));
-        amountColumn.setCellValueFactory(new PropertyValueFactory<Model, Double>("amount"));
+        titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
+        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
+        manufacturerColumn.setCellValueFactory(new PropertyValueFactory<>("manufacturer"));
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+        groupColumn.setCellValueFactory(new PropertyValueFactory<>("productGroup"));
+        amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
     }
 
     @FXML
     public void showAllButtonClicked() {
         buttonAnchor.setVisible(false);
         showAllAnchor.setVisible(true);
-        titleColumn1.setCellValueFactory(new PropertyValueFactory<Model, String>("title"));
-        descriptionColumn1.setCellValueFactory(new PropertyValueFactory<Model, String>("description"));
-        manufacturerColumn1.setCellValueFactory(new PropertyValueFactory<Model, String>("manufacturer"));
-        priceColumn1.setCellValueFactory(new PropertyValueFactory<Model, Double>("price"));
-        groupColumn1.setCellValueFactory(new PropertyValueFactory<Model, String>("productGroup"));
-        amountColumn1.setCellValueFactory(new PropertyValueFactory<Model, Double>("amount"));
+        titleColumn1.setCellValueFactory(new PropertyValueFactory<>("title"));
+        descriptionColumn1.setCellValueFactory(new PropertyValueFactory<>("description"));
+        manufacturerColumn1.setCellValueFactory(new PropertyValueFactory<>("manufacturer"));
+        priceColumn1.setCellValueFactory(new PropertyValueFactory<>("price"));
+        groupColumn1.setCellValueFactory(new PropertyValueFactory<>("productGroup"));
+        amountColumn1.setCellValueFactory(new PropertyValueFactory<>("amount"));
     }
 
     @FXML
@@ -295,9 +256,9 @@ public class InterfaceController {
         showAllSubmitButton.setVisible(false);
         fullPriceSubmitButton.setVisible(true);
         tableViewShow11.setVisible(false);
-        titleColumn11.setCellValueFactory(new PropertyValueFactory<Model, String>("title"));
-        priceColumn11.setCellValueFactory(new PropertyValueFactory<Model, Double>("price"));
-        amountColumn11.setCellValueFactory(new PropertyValueFactory<Model, Double>("amount"));
+        titleColumn11.setCellValueFactory(new PropertyValueFactory<>("title"));
+        priceColumn11.setCellValueFactory(new PropertyValueFactory<>("price"));
+        amountColumn11.setCellValueFactory(new PropertyValueFactory<>("amount"));
 
     }
 
@@ -342,58 +303,6 @@ public class InterfaceController {
         showAllSubmitButton.setVisible(true);
     }
 
-    //--------------------------showing product------------------
-    @FXML
-    public void showProductSubmitButtonClicked() {
-        commandType = 9;
-        String price= priceInput.getText();
-        String amount= amountInput.getText();
-        if(price.equals(""))
-            price = "0";
-        //resultView
-        if(amount.equals(""))
-            amount = "-1";
-
-        String result = titleInput.getText() + "," + descriptionInput.getText()
-                + "," + manufacturerInput.getText() + "," + price + ","
-                + productGroupInput.getText() + "," + amount;
-        Message message = new Message(commandType, result);
-        App.client1.sendPackage(message.messagePackaging());
-        App.client1.receive();
-        //---------------------------------------------
-
-        showProductSubmitButton.setVisible(false);
-        tableViewShow.setItems(outputData);
-        tableViewShow.setVisible(true);
-        //----------------------------------------------
-        //addingAnchor.setVisible(false);
-        //buttonAnchor.setVisible(true);
-//        addingSubmitButton.setVisible(false);
-//        amountTitle.setVisible(false);
-//        amountInput.setVisible(false);
-
-    }
-
-
-    //---------------------------show all------------------------
-    @FXML
-    public void showAllSubmitButtonClicked() {
-        commandType = 10;
-        String groupName = showAllGroupName.getText();
-
-        String result = groupName;
-        Message message = new Message(commandType, result);
-        App.client1.sendPackage(message.messagePackaging());
-        App.client1.receive();
-        tableViewShow1.setItems(outputData);
-        tableViewShow1.setVisible(true);
-        showAllSubmitButton.setVisible(false);
-
-
-        /*showAllAnchor.setVisible(false);
-        buttonAnchor.setVisible(true);*/
-    }
-
     @FXML
     public void closeButtonShowAllClicked() {
         showAllAnchor.setVisible(false);
@@ -412,6 +321,47 @@ public class InterfaceController {
         outputData.clear();
 
         showAllLabel.setText("Group name:");
+    }
+
+    //--------------------------showing product------------------
+    @FXML
+    public void showProductSubmitButtonClicked() {
+        commandType = 9;
+        String price = priceInput.getText();
+        String amount = amountInput.getText();
+        if (price.equals(""))
+            price = "0";
+        //resultView
+        if (amount.equals(""))
+            amount = "-1";
+
+        String result = titleInput.getText() + "," + descriptionInput.getText()
+                + "," + manufacturerInput.getText() + "," + price + ","
+                + productGroupInput.getText() + "," + amount;
+        Message message = new Message(commandType, result);
+        App.client1.sendPackage(message.messagePackaging());
+        App.client1.receive();
+
+        showProductSubmitButton.setVisible(false);
+        tableViewShow.setItems(outputData);
+        tableViewShow.setVisible(true);
+
+    }
+
+
+    //---------------------------show all------------------------
+    @FXML
+    public void showAllSubmitButtonClicked() {
+        commandType = 10;
+        String groupName = showAllGroupName.getText();
+
+        String result = groupName;
+        Message message = new Message(commandType, result);
+        App.client1.sendPackage(message.messagePackaging());
+        App.client1.receive();
+        tableViewShow1.setItems(outputData);
+        tableViewShow1.setVisible(true);
+        showAllSubmitButton.setVisible(false);
     }
 
     //-----------------------------update------------------------
@@ -451,7 +401,6 @@ public class InterfaceController {
     }
 
 
-
     //------------------------full price-------------------------
     @FXML
     public void fullPriceSubmitButtonClicked() {
@@ -463,8 +412,7 @@ public class InterfaceController {
         Message message = new Message(commandType, result);
         App.client1.sendPackage(message.messagePackaging());
         App.client1.receive();
-        for(int i = 0; i < outputData.size(); i++)
-        {
+        for (int i = 0; i < outputData.size(); i++) {
             Model forTry = outputData.get(i);
             Model.fullPrice += outputData.get(i).getPrice() * outputData.get(i).getAmount();
             System.out.println(forTry.getAmount());
@@ -475,8 +423,6 @@ public class InterfaceController {
         outputData.add(model);
         tableViewShow11.setItems(outputData);
         tableViewShow11.setVisible(true);
-        /*showAllAnchor.setVisible(false);
-        buttonAnchor.setVisible(true);*/
         fullPriceSubmitButton.setVisible(false);
 
     }
@@ -502,8 +448,6 @@ public class InterfaceController {
 
         showAllLabel.setText("Group name:");
     }
-
-
 
 
     //-------------------------GROUP PRODUCTS---------------------
@@ -595,7 +539,6 @@ public class InterfaceController {
         inputGroupDescription.setVisible(true);
         groupDescriptionLabel.setVisible(true);
     }
-
 
 
 }

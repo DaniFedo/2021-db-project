@@ -8,30 +8,15 @@ public class CommandTypeEncoder {
             PRODUCT_EXTENDED = 2;
 
     static public final int
-            CREATE           = 4,
+            CREATE = 4,
 
-            READ             = 8,
+    READ = 8,
 
-            UPDATE           = 16,
+    UPDATE = 16,
 
-            DELETE           = 32,
+    DELETE = 32,
 
-            LIST_BY_CRITERIA = 64;
-
-
-
-    static public final int
-            PRODUCT_CREATE           = PRODUCT ^ CREATE,
-            PRODUCT_READ             = PRODUCT ^ READ,
-            PRODUCT_UPDATE           = PRODUCT ^ UPDATE,
-            PRODUCT_DELETE           = PRODUCT ^ DELETE,
-            PRODUCT_LIST_BY_CRITERIA = PRODUCT ^ LIST_BY_CRITERIA;
-
-    static public final int
-            GROUP_CREATE           = PRODUCT_EXTENDED ^ CREATE,
-            GROUP_READ             = PRODUCT_EXTENDED ^ READ,
-            GROUP_UPDATE           = PRODUCT_EXTENDED ^ UPDATE,
-            GROUP_DELETE           = PRODUCT_EXTENDED ^ DELETE;
+    LIST_BY_CRITERIA = 64;
 
     public CommandTypeEncoder(int INCOMING_COMMAND_TYPE) throws Exception {
         isProduct = isProduct(INCOMING_COMMAND_TYPE);

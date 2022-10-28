@@ -9,21 +9,20 @@ public class FinalTest {
     private static final String groupTable = "GroupProduct";
     private static final String productTable = "Product";
 
-    private void DBInitialization()
-    {
+    private void DBInitialization() {
 
         Table.create(productTable);
         Table.create(groupTable);
         Table.addGroup("testGroup2", "");
         Table.addGroup("testGroup1", "");
-        Table.addProduct("test3","","",10,"testGroup2");
+        Table.addProduct("test3", "", "", 10, "testGroup2");
         Table.addProduct("test2", "", "", 5, "testGroup1");
         Table.updateProductAmount("test2", 20);
 
     }
+
     @Test
-    public void messageEncodingAndDecodingTest() throws Exception
-    {
+    public void messageEncodingAndDecodingTest() throws Exception {
         Database.connect();
         DBInitialization();
         Database.close();
@@ -39,8 +38,7 @@ public class FinalTest {
         Message message9 = new Message(65, "");
 
 
-
-       StoreClientTCP client1 = new StoreClientTCP();
+        StoreClientTCP client1 = new StoreClientTCP();
         client1.startConnection("localhost", 2305);
 
         client1.sendPackage(message2.messagePackaging());

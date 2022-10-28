@@ -77,7 +77,7 @@
                         </Label>
                         <TableView fx:id="tableViewShow" layoutX="2.0" layoutY="92.0" prefHeight="290.0" prefWidth="600.0" style="-fx-background-color: #CD853F" visible="false" AnchorPane.bottomAnchor="81.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <columns>
-                              <TableColumn fx:id="titleColumn" prefWidth="93.99996948242188" style="-fx-background-color: #CD853F" text="Title" />
+                              <TableColumn fx:id="titleColumn" prefWidth="93.99996948242188" text="Title" />
                               <TableColumn fx:id="descriptionColumn" prefWidth="141.33334350585938" text="Description" />
                               <TableColumn fx:id="manufacturerColumn" prefWidth="117.33331298828125" text="Manufacturer" />
                               <TableColumn fx:id="priceColumn" minWidth="0.0" prefWidth="68.0" text="Price" />
